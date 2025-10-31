@@ -1,0 +1,35 @@
+.cart_item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.counter {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.cart_image {
+  width: 240px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.name {
+  margin-top: 8px;
+  color: var(--text-primary-color);
+  font-size: 14px;
+}

@@ -1,4 +1,7 @@
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
+import { useState } from 'react';
+
+import BurgerIngredientCart from '@components/burger-ingredients/burger-ingredient-cart.tsx';
 
 import type { TIngredient } from '@utils/types';
 
@@ -13,39 +16,54 @@ export const BurgerIngredients = ({
 }: TBurgerIngredientsProps): React.JSX.Element => {
   console.log(ingredients);
 
+  const BUN = 'bun' as const;
+  const SAUCE = 'sauce' as const;
+  const MAIN = 'main' as const;
+
+  type IngredientType = typeof BUN | typeof SAUCE | typeof MAIN;
+
+  const [currentType, setCurrentType] = useState<IngredientType>(BUN);
+
   return (
     <section className={styles.burger_ingredients}>
       <nav>
         <ul className={styles.menu}>
           <Tab
-            value="bun"
-            active={true}
+            value={BUN}
+            active={currentType === BUN}
             onClick={() => {
-              /* TODO */
+              setCurrentType(BUN);
             }}
           >
             Булки
           </Tab>
           <Tab
-            value="main"
-            active={false}
+            value={MAIN}
+            active={currentType === MAIN}
             onClick={() => {
-              /* TODO */
+              setCurrentType(MAIN);
             }}
           >
             Начинки
           </Tab>
           <Tab
-            value="sauce"
-            active={false}
+            value={SAUCE}
+            active={currentType === SAUCE}
             onClick={() => {
-              /* TODO */
+              setCurrentType(SAUCE);
             }}
           >
             Соусы
           </Tab>
         </ul>
       </nav>
+      <div style={{ overflowY: 'auto' }} className={`${styles.container} pr-4 pr-4`}>
+        {ingredients
+          .filter((ing) => ing.type === currentType)
+          .map((ingredient) => {
+            return <BurgerIngredientCart key={ingredient._id} ingredient={ingredient} />;
+          })}
+      </div>
     </section>
   );
 };
