@@ -6,6 +6,11 @@
   color: var(--text-primary-color);
 }
 
+.burger_constructor_scroll {
+  max-height: 460px;
+  overflow-y: auto;
+}
+
 .burger_constructor_list {
   display: flex;
   flex-direction: column;
@@ -23,8 +28,4 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-}
-
-.hidden {
-  visibility: hidden;
 }

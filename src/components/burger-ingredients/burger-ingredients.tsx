@@ -57,7 +57,7 @@ export const BurgerIngredients = ({
           </Tab>
         </ul>
       </nav>
-      <div style={{ overflowY: 'auto' }} className={`${styles.container} pr-4 pr-4`}>
+      <div className={`${styles.container} pr-4 pr-4`}>
         {ingredients
           .filter((ing) => ing.type === currentType)
           .map((ingredient) => {
