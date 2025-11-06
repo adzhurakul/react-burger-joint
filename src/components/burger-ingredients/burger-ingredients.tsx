@@ -9,10 +9,14 @@ import styles from './burger-ingredients.module.css';
 
 type TBurgerIngredientsProps = {
   ingredients: TIngredient[];
+  onIngredientClick?: (
+    value: ((prevState: TIngredient | null) => TIngredient | null) | TIngredient | null
+  ) => void;
 };
 
 export const BurgerIngredients = ({
   ingredients,
+  onIngredientClick,
 }: TBurgerIngredientsProps): React.JSX.Element => {
   console.log(ingredients);
 
@@ -61,7 +65,13 @@ export const BurgerIngredients = ({
         {ingredients
           .filter((ing) => ing.type === currentType)
           .map((ingredient) => {
-            return <BurgerIngredientCart key={ingredient._id} ingredient={ingredient} />;
+            return (
+              <BurgerIngredientCart
+                onClick={onIngredientClick}
+                key={ingredient._id}
+                ingredient={ingredient}
+              />
+            );
           })}
       </div>
     </section>

@@ -1,0 +1,21 @@
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1001;
+  min-width: 600px;
+  max-width: 90%;
+  max-height: 90%;
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: #2f2f37;
+  border-radius: 12px;
+  transform: translate(-50%, -50%);
+}
+
+.modal_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}

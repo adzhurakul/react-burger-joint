@@ -6,15 +6,17 @@ import styles from './burger-ingredient-cart.module.css';
 
 type TBurgerIngredientCartProps = {
   ingredient: TIngredient;
+  onClick?: (ingredient: TIngredient) => void;
 };
 
 const BurgerIngredientCart = ({
   ingredient,
+  onClick,
 }: TBurgerIngredientCartProps): React.JSX.Element => {
   console.log(ingredient);
 
   return (
-    <div className={styles.cart_item}>
+    <div className={styles.cart_item} onClick={() => onClick?.(ingredient)}>
       <img className={styles.cart_image} src={ingredient.image} alt={ingredient.name} />
 
       <div className={styles.price}>

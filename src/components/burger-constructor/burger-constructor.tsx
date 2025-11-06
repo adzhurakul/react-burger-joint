@@ -12,10 +12,18 @@ import styles from './burger-constructor.module.css';
 
 type TBurgerConstructorProps = {
   ingredients: TIngredient[];
+  onOrderClick: (
+    value: ((prevState: number | null) => number | null) | number | null
+  ) => void;
+  onIngredientClick: (
+    value: ((prevState: TIngredient | null) => TIngredient | null) | TIngredient | null
+  ) => void;
 };
 
 export const BurgerConstructor = ({
   ingredients,
+  onOrderClick,
+  onIngredientClick,
 }: TBurgerConstructorProps): React.JSX.Element => {
   console.log(ingredients);
 
@@ -26,6 +34,9 @@ export const BurgerConstructor = ({
         <li
           key={ingredient._id}
           className={`${styles.burger_constructor_element} mt-2 mb-2`}
+          onClick={() => {
+            onIngredientClick(ingredient);
+          }}
         >
           <DragIcon type={'primary'} className={`mr-6`} />
           <ConstructorElement
@@ -47,7 +58,12 @@ export const BurgerConstructor = ({
     extraText?: string
   ): JSX.Element => {
     return (
-      <div className={`ml-8 pr-4 pl-6 ${type === 'top' ? 'pb-2' : 'pt-2'}`}>
+      <div
+        className={`ml-8 pr-4 pl-6 ${type === 'top' ? 'pb-2' : 'pt-2'}`}
+        onClick={() => {
+          onIngredientClick(bun);
+        }}
+      >
         <ConstructorElement
           text={extraText === undefined ? bun.name : bun.name + '\n' + extraText}
           thumbnail={bun.image}
@@ -75,7 +91,14 @@ export const BurgerConstructor = ({
         >
           {totalPrice}
           <CurrencyIcon type="primary" className="mr-10" />
-          <Button type="primary" htmlType="button" size="large">
+          <Button
+            type="primary"
+            htmlType="button"
+            size="large"
+            onClick={() => {
+              onOrderClick(123456);
+            }}
+          >
             Оформить заказ
           </Button>
         </div>
