@@ -5,7 +5,6 @@ import { BurgerConstructor } from '@components/burger-constructor/burger-constru
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
 import { IngredientDetails } from '@components/burger-ingredients/details/ingredient-details.tsx';
 import { OrderDetails } from '@components/burger-ingredients/details/order-details.tsx';
-import { ModalOverlay } from '@components/modal/modal-overlay.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 
 import type { TIngredient } from '@utils/types.ts';
@@ -53,25 +52,8 @@ export const App = (): React.JSX.Element => {
       }
     };
 
-    getProductData().catch((err) => {
-      console.error(err);
-      setIngredients({ ingredientsData: null, loading: false });
-    });
+    void getProductData();
   }, []);
-
-  useEffect(() => {
-    const handleEsc = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        handleCloseModal();
-      }
-    };
-
-    document.addEventListener('keydown', handleEsc);
-
-    return (): void => {
-      document.removeEventListener('keydown', handleEsc);
-    };
-  }, [handleCloseModal]);
 
   return (
     <>
@@ -93,20 +75,14 @@ export const App = (): React.JSX.Element => {
         </main>
       </div>
       {selectedIngredient && (
-        <>
-          <ModalOverlay onClose={handleCloseModal} />
-          <Modal onClose={handleCloseModal} header="Детали ингредиента">
-            <IngredientDetails ingredient={selectedIngredient} />
-          </Modal>
-        </>
+        <Modal onClose={handleCloseModal} header="Детали ингредиента">
+          <IngredientDetails ingredient={selectedIngredient} />
+        </Modal>
       )}
       {orderNumber && (
-        <>
-          <ModalOverlay onClose={handleCloseModal} />
-          <Modal onClose={handleCloseModal} header="Детали ингредиента">
-            <OrderDetails orderNumber={orderNumber} />
-          </Modal>
-        </>
+        <Modal onClose={handleCloseModal}>
+          <OrderDetails orderNumber={orderNumber} />
+        </Modal>
       )}
     </>
   );

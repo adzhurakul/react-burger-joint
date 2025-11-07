@@ -1,0 +1,35 @@
+.error_section {
+  margin: 1rem;
+  padding: 1rem;
+  font-family: monospace;
+  background-color: #fdd;
+  border-radius: 8px;
+}
+
+.title {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.message {
+  margin-bottom: 1rem;
+}
+
+.debug_block {
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #000;
+}
+
+.debug_title {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.stack_trace {
+  padding: 0.5rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  background-color: #fff5f5;
+  border-radius: 4px;
+}
