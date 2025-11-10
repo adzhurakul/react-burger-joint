@@ -5,3 +5,27 @@
   padding-bottom: 20px;
   color: var(--text-primary-color);
 }
+
+.burger_constructor_scroll {
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+.burger_constructor_list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.burger_constructor_element {
+  display: flex;
+  align-items: center;
+}
+
+.burger_constructor_summary {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

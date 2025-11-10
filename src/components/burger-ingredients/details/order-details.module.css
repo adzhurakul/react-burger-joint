@@ -1,0 +1,20 @@
+.order_details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.order_label {
+  color: var(--text-inactive-color);
+}
+
+.icon {
+  width: 120px;
+  height: 120px;
+}
+
+.text_muted {
+  color: var(--text-inactive-color);
+}
