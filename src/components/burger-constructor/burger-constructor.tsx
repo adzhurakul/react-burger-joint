@@ -12,12 +12,8 @@ import styles from './burger-constructor.module.css';
 
 type TBurgerConstructorProps = {
   ingredients: TIngredient[];
-  onOrderClick: (
-    value: ((prevState: number | null) => number | null) | number | null
-  ) => void;
-  onIngredientClick: (
-    value: ((prevState: TIngredient | null) => TIngredient | null) | TIngredient | null
-  ) => void;
+  onOrderClick: (value: number) => void;
+  onIngredientClick: (value: TIngredient | null) => void;
 };
 
 export const BurgerConstructor = ({

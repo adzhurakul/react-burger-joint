@@ -117,7 +117,7 @@ export default tseslint.config(
             '^@contexts/',
             '^@hooks/',
             '^@pages/',
-            '^@services/',
+            '^@app/',
             '^@utils/',
           ],
           customGroups: {

@@ -9,9 +9,7 @@ import styles from './burger-ingredients.module.css';
 
 type TBurgerIngredientsProps = {
   ingredients: TIngredient[];
-  onIngredientClick?: (
-    value: ((prevState: TIngredient | null) => TIngredient | null) | TIngredient | null
-  ) => void;
+  onIngredientClick?: (value: TIngredient | null) => void;
 };
 
 export const BurgerIngredients = ({

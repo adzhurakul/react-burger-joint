@@ -1,4 +1,10 @@
-import { useState, useEffect } from 'react';
+import {
+  fetchIngredients,
+  setCreatedOrder,
+  setCurrentIngredient,
+} from '@/app/ingredients-slice.ts';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
@@ -7,53 +13,25 @@ import { IngredientDetails } from '@components/burger-ingredients/details/ingred
 import { OrderDetails } from '@components/burger-ingredients/details/order-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 
-import type { TIngredient } from '@utils/types.ts';
+import type { RootState, AppDispatch } from '@/app/store.ts';
 import type React from 'react';
 
 import styles from './app.module.css';
 
-type ApiResponse = {
-  success: boolean;
-  data: TIngredient[];
-};
-
-const url = 'https://norma.education-services.ru/api/ingredients';
-
 export const App = (): React.JSX.Element => {
-  const [selectedIngredient, setSelectedIngredient] = useState<TIngredient | null>(null);
-  const [orderNumber, setOrderNumber] = useState<number | null>(null);
-
-  const [ingredients, setIngredients] = useState<{
-    ingredientsData: TIngredient[] | null;
-    loading: boolean;
-  }>({
-    ingredientsData: null,
-    loading: true,
-  });
+  const useAppDispatch = (): AppDispatch => useDispatch<AppDispatch>();
+  const dispatch: AppDispatch = useAppDispatch();
+  const { allIngredients, currentIngredient, createdOrder, constructorIngredients } =
+    useSelector((state: RootState) => state.ingredients);
 
   const handleCloseModal = (): void => {
-    setSelectedIngredient(null);
-    setOrderNumber(null);
+    dispatch(setCurrentIngredient(null));
+    dispatch(setCreatedOrder(null));
   };
 
   useEffect(() => {
-    const getProductData = async (): Promise<void> => {
-      setIngredients((prev) => ({ ...prev, loading: true }));
-
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
-
-        const json = (await res.json()) as ApiResponse;
-        setIngredients({ ingredientsData: json.data, loading: false });
-      } catch (err) {
-        console.error(err);
-        setIngredients({ ingredientsData: null, loading: false });
-      }
-    };
-
-    void getProductData();
-  }, []);
+    void dispatch(fetchIngredients());
+  }, [dispatch]);
 
   return (
     <>
@@ -64,24 +42,32 @@ export const App = (): React.JSX.Element => {
         </h1>
         <main className={`${styles.main} pl-5 pr-5`}>
           <BurgerIngredients
-            onIngredientClick={setSelectedIngredient}
-            ingredients={ingredients.ingredientsData ?? []}
+            onIngredientClick={(ingredient) =>
+              dispatch(setCurrentIngredient(ingredient))
+            }
+            ingredients={allIngredients ?? []}
           />
           <BurgerConstructor
-            onIngredientClick={setSelectedIngredient}
-            onOrderClick={setOrderNumber}
-            ingredients={ingredients.ingredientsData ?? []}
+            onIngredientClick={(ingredient) =>
+              dispatch(setCurrentIngredient(ingredient))
+            }
+            onOrderClick={(orderNumber) =>
+              dispatch(
+                setCreatedOrder({ id: orderNumber, ingredients: constructorIngredients })
+              )
+            }
+            ingredients={allIngredients ?? []}
           />
         </main>
       </div>
-      {selectedIngredient && (
+      {currentIngredient != null && (
         <Modal onClose={handleCloseModal} header="Детали ингредиента">
-          <IngredientDetails ingredient={selectedIngredient} />
+          <IngredientDetails ingredient={currentIngredient} />
         </Modal>
       )}
-      {orderNumber && (
+      {createdOrder != null && (
         <Modal onClose={handleCloseModal}>
-          <OrderDetails orderNumber={orderNumber} />
+          <OrderDetails orderNumber={createdOrder.id} />
         </Modal>
       )}
     </>
