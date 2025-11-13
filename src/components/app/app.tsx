@@ -4,6 +4,8 @@ import {
   setCurrentIngredient,
 } from '@/app/ingredients-slice.ts';
 import { useEffect } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { AppHeader } from '@components/app-header/app-header';
@@ -35,41 +37,46 @@ export const App = (): React.JSX.Element => {
 
   return (
     <>
-      <div className={styles.app}>
-        <AppHeader />
-        <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
-          Соберите бургер
-        </h1>
-        <main className={`${styles.main} pl-5 pr-5`}>
-          <BurgerIngredients
-            onIngredientClick={(ingredient) =>
-              dispatch(setCurrentIngredient(ingredient))
-            }
-            ingredients={allIngredients ?? []}
-          />
-          <BurgerConstructor
-            onIngredientClick={(ingredient) =>
-              dispatch(setCurrentIngredient(ingredient))
-            }
-            onOrderClick={(orderNumber) =>
-              dispatch(
-                setCreatedOrder({ id: orderNumber, ingredients: constructorIngredients })
-              )
-            }
-            ingredients={allIngredients ?? []}
-          />
-        </main>
-      </div>
-      {currentIngredient != null && (
-        <Modal onClose={handleCloseModal} header="Детали ингредиента">
-          <IngredientDetails ingredient={currentIngredient} />
-        </Modal>
-      )}
-      {createdOrder != null && (
-        <Modal onClose={handleCloseModal}>
-          <OrderDetails orderNumber={createdOrder.id} />
-        </Modal>
-      )}
+      <DndProvider backend={HTML5Backend}>
+        <div className={styles.app}>
+          <AppHeader />
+          <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
+            Соберите бургер
+          </h1>
+          <main className={`${styles.main} pl-5 pr-5`}>
+            <BurgerIngredients
+              onIngredientClick={(ingredient) =>
+                dispatch(setCurrentIngredient(ingredient))
+              }
+              ingredients={allIngredients ?? []}
+            />
+            <BurgerConstructor
+              onIngredientClick={(ingredient) =>
+                dispatch(setCurrentIngredient(ingredient))
+              }
+              onOrderClick={(orderNumber) =>
+                dispatch(
+                  setCreatedOrder({
+                    id: orderNumber,
+                    ingredients: constructorIngredients,
+                  })
+                )
+              }
+              ingredients={allIngredients ?? []}
+            />
+          </main>
+        </div>
+        {currentIngredient != null && (
+          <Modal onClose={handleCloseModal} header="Детали ингредиента">
+            <IngredientDetails ingredient={currentIngredient} />
+          </Modal>
+        )}
+        {createdOrder != null && (
+          <Modal onClose={handleCloseModal}>
+            <OrderDetails orderNumber={createdOrder.id} />
+          </Modal>
+        )}
+      </DndProvider>
     </>
   );
 };

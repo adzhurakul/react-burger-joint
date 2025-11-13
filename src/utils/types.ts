@@ -17,3 +17,7 @@ export type ApiResponse = {
   success: boolean;
   data: TIngredient[];
 };
+
+export const ItemTypes = {
+  INGREDIENT: 'ingredient',
+};

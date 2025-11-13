@@ -1,4 +1,7 @@
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
+import { useDrag } from 'react-dnd';
+
+import { ItemTypes } from '@utils/types.ts';
 
 import type { TIngredient } from '@utils/types.ts';
 
@@ -15,8 +18,24 @@ const BurgerIngredientCart = ({
 }: TBurgerIngredientCartProps): React.JSX.Element => {
   console.log(ingredient);
 
+  const [{ isDragging }, dragRef] = useDrag({
+    type: ItemTypes.INGREDIENT,
+    item: { ...ingredient },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const refCallback = (node: HTMLDivElement | null): void => {
+    dragRef(node);
+  };
+
   return (
-    <div className={styles.cart_item} onClick={() => onClick?.(ingredient)}>
+    <div
+      ref={refCallback}
+      className={`${styles.cart_item} ${isDragging ? styles.dragging : ''}`}
+      onClick={() => onClick?.(ingredient)}
+    >
       <img className={styles.cart_image} src={ingredient.image} alt={ingredient.name} />
 
       <div className={styles.price}>

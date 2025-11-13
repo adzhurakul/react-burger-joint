@@ -1,10 +1,19 @@
 import {
+  addIngredientToConstructor,
+  removeIngredientFromConstructor,
+} from '@/app/ingredients-slice';
+import {
   Button,
   ConstructorElement,
   CurrencyIcon,
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
+import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { ItemTypes } from '@utils/types';
+
+import type { RootState } from '@/app/store.ts';
 import type { TIngredient } from '@utils/types';
 import type { JSX } from 'react';
 
@@ -23,6 +32,29 @@ export const BurgerConstructor = ({
 }: TBurgerConstructorProps): React.JSX.Element => {
   console.log(ingredients);
 
+  const dispatch = useDispatch();
+  const constructorIngredients = useSelector(
+    (state: RootState) => state.ingredients.constructorIngredients
+  );
+
+  const [, dropRef] = useDrop({
+    accept: ItemTypes.INGREDIENT,
+    drop: (item: TIngredient) => {
+      if (item.type === 'bun') {
+        dispatch(
+          removeIngredientFromConstructor(
+            constructorIngredients.find((i) => i.type === 'bun')?._id ?? ''
+          )
+        );
+      }
+      dispatch(addIngredientToConstructor(item));
+    },
+  });
+
+  const handleRemove = (id: string): void => {
+    dispatch(removeIngredientFromConstructor(id));
+  };
+
   const elems = ingredients
     .filter((ing) => ing.type !== 'bun')
     .map((ingredient) => {
@@ -40,6 +72,7 @@ export const BurgerConstructor = ({
             thumbnail={ingredient.image}
             price={ingredient.price}
             isLocked={false}
+            handleClose={() => handleRemove(ingredient._id)}
           />
         </li>
       );
@@ -73,7 +106,11 @@ export const BurgerConstructor = ({
 
   return (
     <section className={styles.burger_constructor}>
-      <div>
+      <div
+        ref={(node) => {
+          dropRef(node);
+        }}
+      >
         {bun && bunElement('top', bun, '(верх)')}
 
         <div className={`${styles.burger_constructor_scroll} pr-4 pl-4`}>
