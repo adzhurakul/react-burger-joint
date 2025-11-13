@@ -20,18 +20,12 @@ import type { JSX } from 'react';
 import styles from './burger-constructor.module.css';
 
 type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
   onOrderClick: (value: number) => void;
-  onIngredientClick: (value: TIngredient | null) => void;
 };
 
 export const BurgerConstructor = ({
-  ingredients,
   onOrderClick,
-  onIngredientClick,
 }: TBurgerConstructorProps): React.JSX.Element => {
-  console.log(ingredients);
-
   const dispatch = useDispatch();
   const constructorIngredients = useSelector(
     (state: RootState) => state.ingredients.constructorIngredients
@@ -55,16 +49,13 @@ export const BurgerConstructor = ({
     dispatch(removeIngredientFromConstructor(id));
   };
 
-  const elems = ingredients
+  const elems = constructorIngredients
     .filter((ing) => ing.type !== 'bun')
     .map((ingredient) => {
       return (
         <li
           key={ingredient._id}
           className={`${styles.burger_constructor_element} mt-2 mb-2`}
-          onClick={() => {
-            onIngredientClick(ingredient);
-          }}
         >
           <DragIcon type={'primary'} className={`mr-6`} />
           <ConstructorElement
@@ -78,8 +69,12 @@ export const BurgerConstructor = ({
       );
     });
 
-  const totalPrice = ingredients.reduce((sum, ingredient) => sum + ingredient.price, 0);
-  const bun = ingredients.find((ing) => ing.type === 'bun');
+  const totalPrice = constructorIngredients.reduce(
+    (sum, ingredient) =>
+      sum + (ingredient.type === 'bun' ? ingredient.price * 2 : ingredient.price),
+    0
+  );
+  const bun = constructorIngredients.find((ing) => ing.type === 'bun');
 
   const bunElement = (
     type: 'top' | 'bottom',
@@ -87,18 +82,14 @@ export const BurgerConstructor = ({
     extraText?: string
   ): JSX.Element => {
     return (
-      <div
-        className={`ml-8 pr-4 pl-6 ${type === 'top' ? 'pb-2' : 'pt-2'}`}
-        onClick={() => {
-          onIngredientClick(bun);
-        }}
-      >
+      <div className={`ml-8 pr-4 pl-6 ${type === 'top' ? 'pb-2' : 'pt-2'}`}>
         <ConstructorElement
           text={extraText === undefined ? bun.name : bun.name + '\n' + extraText}
           thumbnail={bun.image}
           price={bun.price}
           type={type}
           isLocked={true}
+          handleClose={() => handleRemove(bun._id)}
         />
       </div>
     );

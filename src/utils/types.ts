@@ -21,3 +21,11 @@ export type ApiResponse = {
 export const ItemTypes = {
   INGREDIENT: 'ingredient',
 };
+
+export type CreateOrderResponse = {
+  success: boolean;
+  name: string;
+  order: {
+    number: number;
+  };
+};

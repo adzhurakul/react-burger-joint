@@ -1,4 +1,5 @@
 import {
+  createOrder,
   fetchIngredients,
   setCreatedOrder,
   setCurrentIngredient,
@@ -51,18 +52,10 @@ export const App = (): React.JSX.Element => {
               ingredients={allIngredients ?? []}
             />
             <BurgerConstructor
-              onIngredientClick={(ingredient) =>
-                dispatch(setCurrentIngredient(ingredient))
-              }
-              onOrderClick={(orderNumber) =>
-                dispatch(
-                  setCreatedOrder({
-                    id: orderNumber,
-                    ingredients: constructorIngredients,
-                  })
-                )
-              }
-              ingredients={allIngredients ?? []}
+              onOrderClick={() => {
+                const ingredientIds = constructorIngredients.map((ing) => ing._id);
+                void dispatch(createOrder(ingredientIds));
+              }}
             />
           </main>
         </div>
