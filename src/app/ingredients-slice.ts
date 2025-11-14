@@ -94,6 +94,16 @@ const ingredientsSlice = createSlice({
       state.currentIngredient = null;
       state.createdOrder = null;
     },
+    reorderConstructorIngredients: (
+      state,
+      action: PayloadAction<{ dragIndex: number; hoverIndex: number }>
+    ) => {
+      const { dragIndex, hoverIndex } = action.payload;
+      const ingredients = [...state.constructorIngredients];
+      const [removed] = ingredients.splice(dragIndex, 1);
+      ingredients.splice(hoverIndex, 0, removed);
+      state.constructorIngredients = ingredients;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -134,6 +144,7 @@ export const {
   setCurrentIngredient,
   setCreatedOrder,
   resetConstructor,
+  reorderConstructorIngredients,
 } = ingredientsSlice.actions;
 
 export default ingredientsSlice.reducer;

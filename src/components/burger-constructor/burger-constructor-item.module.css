@@ -1,0 +1,8 @@
+.burger_constructor_element {
+  display: flex;
+  align-items: center;
+}
+
+.burger_constructor_element.dragging {
+  opacity: 0.3;
+}

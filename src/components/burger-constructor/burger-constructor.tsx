@@ -6,12 +6,13 @@ import {
   Button,
   ConstructorElement,
   CurrencyIcon,
-  DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ItemTypes } from '@utils/types';
+
+import { BurgerConstructorItem } from './burger-constructor-item';
 
 import type { RootState } from '@/app/store.ts';
 import type { TIngredient } from '@utils/types';
@@ -51,23 +52,13 @@ export const BurgerConstructor = ({
 
   const elems = constructorIngredients
     .filter((ing) => ing.type !== 'bun')
-    .map((ingredient) => {
-      return (
-        <li
-          key={ingredient._id}
-          className={`${styles.burger_constructor_element} mt-2 mb-2`}
-        >
-          <DragIcon type={'primary'} className={`mr-6`} />
-          <ConstructorElement
-            text={ingredient.name}
-            thumbnail={ingredient.image}
-            price={ingredient.price}
-            isLocked={false}
-            handleClose={() => handleRemove(ingredient._id)}
-          />
-        </li>
-      );
-    });
+    .map((ingredient, index) => (
+      <BurgerConstructorItem
+        key={ingredient._id}
+        ingredient={ingredient}
+        index={index}
+      />
+    ));
 
   const totalPrice = constructorIngredients.reduce(
     (sum, ingredient) =>

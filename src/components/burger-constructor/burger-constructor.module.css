@@ -9,7 +9,7 @@
 
 .burger_constructor_scroll {
   flex: 1;
-  max-height: none;
+  max-height: calc(100vh - 350px);
   overflow-y: auto;
 }
 
@@ -19,11 +19,6 @@
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.burger_constructor_element {
-  display: flex;
-  align-items: center;
 }
 
 .burger_constructor_summary {
