@@ -37,6 +37,8 @@ const BurgerIngredientCart = ({
     dragRef(node);
   };
 
+  const count = getIngredientCount(constructorIngredients, ingredient._id);
+
   return (
     <div
       ref={refCallback}
@@ -51,12 +53,11 @@ const BurgerIngredientCart = ({
       </div>
 
       <p className={`${styles.name}text text_type_main-default`}>{ingredient.name}</p>
-      <div className={styles.counter}>
-        <Counter
-          count={getIngredientCount(constructorIngredients, ingredient._id)}
-          size="default"
-        />
-      </div>
+      {count > 0 && (
+        <div className={styles.counter}>
+          <Counter count={count} size="default" />
+        </div>
+      )}
     </div>
   );
 };

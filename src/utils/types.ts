@@ -20,6 +20,7 @@ export type ApiResponse = {
 
 export const ItemTypes = {
   INGREDIENT: 'ingredient',
+  CONSTRUCTOR_ITEM: 'CONSTRUCTOR_ITEM',
 };
 
 export type CreateOrderResponse = {

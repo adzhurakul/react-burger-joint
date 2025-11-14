@@ -29,7 +29,7 @@ export const BurgerConstructorItem = ({
   const ref = useRef<HTMLLIElement>(null);
 
   const [, drop] = useDrop({
-    accept: ItemTypes.INGREDIENT,
+    accept: ItemTypes.CONSTRUCTOR_ITEM,
     hover(item: { index: number }) {
       if (!ref.current || item.index === index) return;
       dispatch(
@@ -40,8 +40,8 @@ export const BurgerConstructorItem = ({
   });
 
   const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.INGREDIENT,
-    item: { _id: ingredient._id, index },
+    type: ItemTypes.CONSTRUCTOR_ITEM,
+    item: { index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
