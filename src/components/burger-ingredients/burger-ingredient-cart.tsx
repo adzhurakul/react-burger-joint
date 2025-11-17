@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { getIngredientCount } from '@components/burger-ingredients/get-ingredient-count.tsx';
 import { ItemTypes } from '@utils/types.ts';
 
-import type { RootState } from '@/app/store.ts';
+import type { RootState } from '@/services/store.ts';
 import type { TIngredient } from '@utils/types.ts';
 
 import styles from './burger-ingredient-cart.module.css';

@@ -1,7 +1,7 @@
 import {
   addIngredientToConstructor,
   removeIngredientFromConstructorById,
-} from '@/app/ingredients-slice';
+} from '@/services/ingredients-slice';
 import {
   Button,
   ConstructorElement,
@@ -14,7 +14,7 @@ import { ItemTypes } from '@utils/types';
 
 import { BurgerConstructorItem } from './burger-constructor-item';
 
-import type { RootState } from '@/app/store.ts';
+import type { RootState } from '@/services/store.ts';
 import type { TIngredient } from '@utils/types';
 import type { JSX } from 'react';
 

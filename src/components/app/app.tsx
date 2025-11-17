@@ -3,7 +3,7 @@ import {
   fetchIngredients,
   setCreatedOrder,
   setCurrentIngredient,
-} from '@/app/ingredients-slice.ts';
+} from '@/services/ingredients-slice.ts';
 import { useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -16,7 +16,7 @@ import { IngredientDetails } from '@components/burger-ingredients/details/ingred
 import { OrderDetails } from '@components/burger-ingredients/details/order-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 
-import type { RootState, AppDispatch } from '@/app/store.ts';
+import type { RootState, AppDispatch } from '@/services/store.ts';
 import type React from 'react';
 
 import styles from './app.module.css';

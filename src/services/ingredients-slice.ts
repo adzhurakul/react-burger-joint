@@ -69,9 +69,6 @@ const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
   reducers: {
-    setAllIngredients: (state, action: PayloadAction<TIngredient[]>) => {
-      state.allIngredients = action.payload;
-    },
     addIngredientToConstructor: (state, action: PayloadAction<TIngredient>) => {
       state.constructorIngredients.push(action.payload);
 
@@ -109,11 +106,6 @@ const ingredientsSlice = createSlice({
       action: PayloadAction<{ id: number; ingredients: TIngredient[] } | null>
     ) => {
       state.createdOrder = action.payload;
-    },
-    resetConstructor: (state) => {
-      state.constructorIngredients = [];
-      state.currentIngredient = null;
-      state.createdOrder = null;
     },
     reorderConstructorIngredients: (
       state,
@@ -159,13 +151,11 @@ const ingredientsSlice = createSlice({
 });
 
 export const {
-  setAllIngredients,
   addIngredientToConstructor,
   removeIngredientFromConstructor,
   removeIngredientFromConstructorById,
   setCurrentIngredient,
   setCreatedOrder,
-  resetConstructor,
   reorderConstructorIngredients,
 } = ingredientsSlice.actions;
 

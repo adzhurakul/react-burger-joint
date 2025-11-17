@@ -1,7 +1,7 @@
 import {
   reorderConstructorIngredients,
   removeIngredientFromConstructor,
-} from '@/app/ingredients-slice';
+} from '@/services/ingredients-slice';
 import {
   DragIcon,
   ConstructorElement,
