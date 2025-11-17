@@ -51,20 +51,21 @@ export const BurgerIngredients = ({
 
     const options = {
       root: container,
-      rootMargin: '0px 0px -80% 0px',
-      threshold: 0,
+      threshold: 0.1,
     };
 
     const observer = new IntersectionObserver((entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      const visibleEntries = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
-      if (!visible) return;
+      if (visibleEntries.length === 0) return;
 
-      const targetId = visible.target.getAttribute('data-type') as IngredientType;
-      if (targetId && targetId !== currentType) {
-        setCurrentType(targetId);
+      const nearest = visibleEntries[0];
+      const type = nearest.target.getAttribute('data-type') as IngredientType;
+
+      if (type) {
+        setCurrentType(type);
       }
     }, options);
 
@@ -74,7 +75,7 @@ export const BurgerIngredients = ({
     return (): void => {
       headers.forEach((ref) => ref && observer.unobserve(ref));
     };
-  }, [currentType]);
+  }, []);
 
   return (
     <section className={styles.burger_ingredients}>
@@ -110,19 +111,19 @@ export const BurgerIngredients = ({
         </ul>
       </nav>
       <div ref={containerRef} className={`${styles.scroll_container} pr-4 pr-4`}>
-        <p ref={bunsRef} className="text text_type_main-medium">
+        <p ref={bunsRef} className="text text_type_main-medium" data-type={BUN}>
           Булки
         </p>
         <div className={`${styles.container} pr-4 pr-4`}>
           {getIngredientElements(BUN)}
         </div>
-        <p ref={mainsRef} className="text text_type_main-medium">
+        <p ref={mainsRef} className="text text_type_main-medium" data-type={MAIN}>
           Начинки
         </p>
         <div className={`${styles.container} pr-4 pr-4`}>
           {getIngredientElements(MAIN)}
         </div>
-        <p ref={saucesRef} className="text text_type_main-medium">
+        <p ref={saucesRef} className="text text_type_main-medium" data-type={SAUCE}>
           Соусы
         </p>
         <div className={`${styles.container} pr-4 pr-4`}>
