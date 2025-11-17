@@ -1,6 +1,6 @@
 import {
   addIngredientToConstructor,
-  removeIngredientFromConstructor,
+  removeIngredientFromConstructorById,
 } from '@/app/ingredients-slice';
 import {
   Button,
@@ -37,7 +37,7 @@ export const BurgerConstructor = ({
     drop: (item: TIngredient) => {
       if (item.type === 'bun') {
         dispatch(
-          removeIngredientFromConstructor(
+          removeIngredientFromConstructorById(
             constructorIngredients.find((i) => i.type === 'bun')?._id ?? ''
           )
         );
@@ -46,8 +46,8 @@ export const BurgerConstructor = ({
     },
   });
 
-  const handleRemove = (id: string): void => {
-    dispatch(removeIngredientFromConstructor(id));
+  const handleRemoveById = (id: string): void => {
+    dispatch(removeIngredientFromConstructorById(id));
   };
 
   const elems = constructorIngredients
@@ -79,8 +79,8 @@ export const BurgerConstructor = ({
           thumbnail={bun.image}
           price={bun.price}
           type={type}
-          isLocked={true}
-          handleClose={() => handleRemove(bun._id)}
+          isLocked={false}
+          handleClose={() => handleRemoveById(bun._id)}
         />
       </div>
     );

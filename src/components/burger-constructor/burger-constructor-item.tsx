@@ -60,7 +60,7 @@ export const BurgerConstructorItem = ({
         thumbnail={ingredient.image}
         price={ingredient.price}
         isLocked={false}
-        handleClose={() => dispatch(removeIngredientFromConstructor(ingredient._id))}
+        handleClose={() => dispatch(removeIngredientFromConstructor(index))}
       />
     </li>
   );

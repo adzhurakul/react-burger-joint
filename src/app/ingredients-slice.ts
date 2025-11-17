@@ -74,8 +74,29 @@ const ingredientsSlice = createSlice({
     },
     addIngredientToConstructor: (state, action: PayloadAction<TIngredient>) => {
       state.constructorIngredients.push(action.payload);
+
+      state.constructorIngredients = state.constructorIngredients.sort((a, b) => {
+        const isABun = a.type === 'bun';
+        const isBBun = b.type === 'bun';
+
+        if (isABun && !isBBun) return 1;
+        if (!isABun && isBBun) return -1;
+        return 0;
+      });
     },
-    removeIngredientFromConstructor: (state, action: PayloadAction<string>) => {
+    removeIngredientFromConstructor: (state, action: PayloadAction<number>) => {
+      const ingredient = state.constructorIngredients[action.payload];
+      if (!ingredient) return;
+
+      if (ingredient.type === 'bun') {
+        state.constructorIngredients = state.constructorIngredients.filter(
+          (ing) => ing.type !== 'bun'
+        );
+      } else {
+        state.constructorIngredients.splice(action.payload, 1);
+      }
+    },
+    removeIngredientFromConstructorById: (state, action: PayloadAction<string>) => {
       state.constructorIngredients = state.constructorIngredients.filter(
         (ing) => ing._id !== action.payload
       );
@@ -141,6 +162,7 @@ export const {
   setAllIngredients,
   addIngredientToConstructor,
   removeIngredientFromConstructor,
+  removeIngredientFromConstructorById,
   setCurrentIngredient,
   setCreatedOrder,
   resetConstructor,
