@@ -23,8 +23,17 @@ const initialState: IngredientsState = {
   error: null,
 };
 
-const INGREDIENTS_URL = 'https://norma.education-services.ru/api/ingredients';
-const ORDER_URL = 'https://norma.education-services.ru/api/orders';
+const BASE_URL = 'https://norma.education-services.ru/api';
+
+const INGREDIENTS_URL = `${BASE_URL}/ingredients`;
+const ORDER_URL = `${BASE_URL}/orders`;
+
+async function checkResponse<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    throw new Error(`Ошибка: ${res.status}`);
+  }
+  return res.json() as Promise<T>;
+}
 
 export const fetchIngredients = createAsyncThunk<
   TIngredient[],
@@ -32,14 +41,10 @@ export const fetchIngredients = createAsyncThunk<
   { rejectValue: string }
 >('ingredients/fetchIngredients', async (_, { rejectWithValue }) => {
   try {
-    const res = await fetch(INGREDIENTS_URL);
-    if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
-    const json = (await res.json()) as ApiResponse;
+    const json = await checkResponse<ApiResponse>(await fetch(INGREDIENTS_URL));
     return json.data;
   } catch (err: unknown) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+    if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
   }
 });
@@ -50,13 +55,14 @@ export const createOrder = createAsyncThunk<
   { rejectValue: string }
 >('ingredients/createOrder', async (ingredientIds, { rejectWithValue }) => {
   try {
-    const res = await fetch(ORDER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ingredients: ingredientIds }),
-    });
-    if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
-    const json = (await res.json()) as CreateOrderResponse;
+    const json = await checkResponse<CreateOrderResponse>(
+      await fetch(ORDER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ingredients: ingredientIds }),
+      })
+    );
+
     return {
       id: json.order.number,
       ingredients: ingredientIds.map((id) => ({ _id: id }) as TIngredient),
