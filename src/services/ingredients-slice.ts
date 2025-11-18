@@ -37,8 +37,8 @@ async function checkResponse<T>(res: Response): Promise<T> {
 }
 
 export const fetchIngredients = createAsyncThunk<
-  TIngredient[], // возвращаемый тип
-  void, // аргумент (payload) thunk
+  TIngredient[],
+  void,
   { rejectValue: string }
 >('ingredients/fetchIngredients', async (_, { rejectWithValue }) => {
   try {
