@@ -9,6 +9,7 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 import { ItemTypes } from '@utils/types';
 
@@ -42,19 +43,15 @@ export const BurgerConstructor = ({
           )
         );
       }
-      dispatch(addIngredientToConstructor(item));
+      dispatch(addIngredientToConstructor({ ...item, uuid: uuidv4() }));
     },
   });
-
-  const handleRemoveById = (id: string): void => {
-    dispatch(removeIngredientFromConstructorById(id));
-  };
 
   const elems = constructorIngredients
     .filter((ing) => ing.type !== 'bun')
     .map((ingredient, index) => (
       <BurgerConstructorItem
-        key={ingredient._id}
+        key={ingredient.uuid}
         ingredient={ingredient}
         index={index}
       />
@@ -79,8 +76,7 @@ export const BurgerConstructor = ({
           thumbnail={bun.image}
           price={bun.price}
           type={type}
-          isLocked={false}
-          handleClose={() => handleRemoveById(bun._id)}
+          isLocked={true}
         />
       </div>
     );

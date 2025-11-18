@@ -3,9 +3,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { TIngredient, ApiResponse, CreateOrderResponse } from '@utils/types';
 
+type ConstructorIngredient = TIngredient & { uuid: string };
+
 type IngredientsState = {
   allIngredients: TIngredient[];
-  constructorIngredients: TIngredient[];
+  constructorIngredients: ConstructorIngredient[];
   currentIngredient: TIngredient | null;
   createdOrder: { id: number; ingredients: TIngredient[] } | null;
   loading: boolean;
@@ -69,7 +71,10 @@ const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
   reducers: {
-    addIngredientToConstructor: (state, action: PayloadAction<TIngredient>) => {
+    addIngredientToConstructor: (
+      state,
+      action: PayloadAction<ConstructorIngredient>
+    ) => {
       state.constructorIngredients.push(action.payload);
 
       state.constructorIngredients = state.constructorIngredients.sort((a, b) => {
