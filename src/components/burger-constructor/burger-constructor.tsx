@@ -9,7 +9,6 @@ import {
 } from '@krgaa/react-developer-burger-ui-components';
 import { useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 
 import { ItemTypes } from '@utils/types';
 
@@ -43,7 +42,7 @@ export const BurgerConstructor = ({
           )
         );
       }
-      dispatch(addIngredientToConstructor({ ...item, uuid: uuidv4() }));
+      dispatch(addIngredientToConstructor(item));
     },
   });
 
@@ -51,7 +50,7 @@ export const BurgerConstructor = ({
     .filter((ing) => ing.type !== 'bun')
     .map((ingredient, index) => (
       <BurgerConstructorItem
-        key={ingredient.uuid}
+        key={ingredient.uniqueId}
         ingredient={ingredient}
         index={index}
       />

@@ -1,9 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { TIngredient, ApiResponse, CreateOrderResponse } from '@utils/types';
 
-type ConstructorIngredient = TIngredient & { uuid: string };
+type ConstructorIngredient = TIngredient & { uniqueId: string };
 
 type IngredientsState = {
   allIngredients: TIngredient[];
@@ -36,12 +37,12 @@ async function checkResponse<T>(res: Response): Promise<T> {
 }
 
 export const fetchIngredients = createAsyncThunk<
-  TIngredient[],
-  void,
+  TIngredient[], // возвращаемый тип
+  void, // аргумент (payload) thunk
   { rejectValue: string }
 >('ingredients/fetchIngredients', async (_, { rejectWithValue }) => {
   try {
-    const json = await checkResponse<ApiResponse>(await fetch(INGREDIENTS_URL));
+    const json = await fetch(INGREDIENTS_URL).then(checkResponse<ApiResponse>);
     return json.data;
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
@@ -55,13 +56,11 @@ export const createOrder = createAsyncThunk<
   { rejectValue: string }
 >('ingredients/createOrder', async (ingredientIds, { rejectWithValue }) => {
   try {
-    const json = await checkResponse<CreateOrderResponse>(
-      await fetch(ORDER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ingredients: ingredientIds }),
-      })
-    );
+    const json = await fetch(ORDER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ingredients: ingredientIds }),
+    }).then(checkResponse<CreateOrderResponse>);
 
     return {
       id: json.order.number,
@@ -77,20 +76,22 @@ const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
   reducers: {
-    addIngredientToConstructor: (
-      state,
-      action: PayloadAction<ConstructorIngredient>
-    ) => {
-      state.constructorIngredients.push(action.payload);
+    addIngredientToConstructor: {
+      reducer: (state, action: PayloadAction<TIngredient & { uniqueId: string }>) => {
+        state.constructorIngredients.push(action.payload);
 
-      state.constructorIngredients = state.constructorIngredients.sort((a, b) => {
-        const isABun = a.type === 'bun';
-        const isBBun = b.type === 'bun';
+        state.constructorIngredients = state.constructorIngredients.sort((a, b) => {
+          const isABun = a.type === 'bun';
+          const isBBun = b.type === 'bun';
 
-        if (isABun && !isBBun) return 1;
-        if (!isABun && isBBun) return -1;
-        return 0;
-      });
+          if (isABun && !isBBun) return 1;
+          if (!isABun && isBBun) return -1;
+          return 0;
+        });
+      },
+      prepare: (ingredient: TIngredient) => {
+        return { payload: { ...ingredient, uniqueId: uuidv4() } };
+      },
     },
     removeIngredientFromConstructor: (state, action: PayloadAction<number>) => {
       const ingredient = state.constructorIngredients[action.payload];
