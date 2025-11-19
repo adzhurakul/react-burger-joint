@@ -1,5 +1,5 @@
 import { Tab } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 import BurgerIngredientCart from '@components/burger-ingredients/burger-ingredient-cart.tsx';
 
@@ -9,9 +9,7 @@ import styles from './burger-ingredients.module.css';
 
 type TBurgerIngredientsProps = {
   ingredients: TIngredient[];
-  onIngredientClick?: (
-    value: ((prevState: TIngredient | null) => TIngredient | null) | TIngredient | null
-  ) => void;
+  onIngredientClick?: (value: TIngredient | null) => void;
 };
 
 export const BurgerIngredients = ({
@@ -27,6 +25,57 @@ export const BurgerIngredients = ({
   type IngredientType = typeof BUN | typeof SAUCE | typeof MAIN;
 
   const [currentType, setCurrentType] = useState<IngredientType>(BUN);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const bunsRef = useRef<HTMLParagraphElement | null>(null);
+  const mainsRef = useRef<HTMLParagraphElement | null>(null);
+  const saucesRef = useRef<HTMLParagraphElement | null>(null);
+
+  const getIngredientElements = useCallback(
+    (type: IngredientType) =>
+      ingredients
+        .filter((ing) => ing.type === type)
+        .map((ingredient) => (
+          <BurgerIngredientCart
+            key={ingredient._id}
+            ingredient={ingredient}
+            onClick={onIngredientClick}
+          />
+        )),
+    [ingredients, onIngredientClick]
+  );
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const options = {
+      root: container,
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      const visibleEntries = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+      if (visibleEntries.length === 0) return;
+
+      const nearest = visibleEntries[0];
+      const type = nearest.target.getAttribute('data-type') as IngredientType;
+
+      if (type) {
+        setCurrentType(type);
+      }
+    }, options);
+
+    const headers = [bunsRef.current, mainsRef.current, saucesRef.current];
+    headers.forEach((ref) => ref && observer.observe(ref));
+
+    return (): void => {
+      headers.forEach((ref) => ref && observer.unobserve(ref));
+    };
+  }, []);
 
   return (
     <section className={styles.burger_ingredients}>
@@ -61,18 +110,25 @@ export const BurgerIngredients = ({
           </Tab>
         </ul>
       </nav>
-      <div className={`${styles.container} pr-4 pr-4`}>
-        {ingredients
-          .filter((ing) => ing.type === currentType)
-          .map((ingredient) => {
-            return (
-              <BurgerIngredientCart
-                onClick={onIngredientClick}
-                key={ingredient._id}
-                ingredient={ingredient}
-              />
-            );
-          })}
+      <div ref={containerRef} className={`${styles.scroll_container} pr-4 pr-4`}>
+        <p ref={bunsRef} className="text text_type_main-medium" data-type={BUN}>
+          Булки
+        </p>
+        <div className={`${styles.container} pr-4 pr-4`}>
+          {getIngredientElements(BUN)}
+        </div>
+        <p ref={mainsRef} className="text text_type_main-medium" data-type={MAIN}>
+          Начинки
+        </p>
+        <div className={`${styles.container} pr-4 pr-4`}>
+          {getIngredientElements(MAIN)}
+        </div>
+        <p ref={saucesRef} className="text text_type_main-medium" data-type={SAUCE}>
+          Соусы
+        </p>
+        <div className={`${styles.container} pr-4 pr-4`}>
+          {getIngredientElements(SAUCE)}
+        </div>
       </div>
     </section>
   );

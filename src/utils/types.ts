@@ -12,3 +12,21 @@ export type TIngredient = {
   image_mobile: string;
   __v: number;
 };
+
+export type ApiResponse = {
+  success: boolean;
+  data: TIngredient[];
+};
+
+export const ItemTypes = {
+  INGREDIENT: 'ingredient',
+  CONSTRUCTOR_ITEM: 'CONSTRUCTOR_ITEM',
+};
+
+export type CreateOrderResponse = {
+  success: boolean;
+  name: string;
+  order: {
+    number: number;
+  };
+};
