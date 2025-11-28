@@ -19,7 +19,7 @@ import {
 import type { AppDispatch, RootState } from '@services/store.ts';
 import type React from 'react';
 
-import styles from './burger-constructor-page.module.css';
+import styles from './all-pages.module.css';
 
 export const BurgerConstructorPage = (): React.JSX.Element => {
   const useAppDispatch = (): AppDispatch => useDispatch<AppDispatch>();
