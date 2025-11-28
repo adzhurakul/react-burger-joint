@@ -2,9 +2,11 @@ import { Button, EmailInput, Input } from '@krgaa/react-developer-burger-ui-comp
 
 import type React from 'react';
 
+import styles from './login-page.module.css';
+
 export const LoginPage = (): React.JSX.Element => {
   return (
-    <>
+    <div className={styles.container}>
       <div className="text text_type_main-default mb-6">Вход</div>
       <div className="mb-6">
         <EmailInput
@@ -49,7 +51,7 @@ export const LoginPage = (): React.JSX.Element => {
           Войти
         </Button>
       </div>
-      <div className="mb-4">
+      <div className={`${styles.actions} mb-4`}>
         <div className="text text_type_main-default text_color_inactive">
           Вы - новый пользователь?
         </div>
@@ -57,14 +59,14 @@ export const LoginPage = (): React.JSX.Element => {
           onClick={function fee() {
             /* empty */
           }}
-          size="small"
+          size="medium"
           type="secondary"
           htmlType={'button'}
         >
           Зарегистрироваться
         </Button>
       </div>
-      <div>
+      <div className={styles.actions}>
         <div className="text text_type_main-default text_color_inactive">
           Забыли пароль?
         </div>
@@ -72,13 +74,13 @@ export const LoginPage = (): React.JSX.Element => {
           onClick={function fee() {
             /* empty */
           }}
-          size="small"
+          size="medium"
           type="secondary"
           htmlType={'button'}
         >
           Восстановить пароль
         </Button>
       </div>
-    </>
+    </div>
   );
 };
