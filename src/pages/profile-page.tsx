@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { AppHeader } from '@components/app-header/app-header.tsx';
+
 import { logoutUser } from '../services/api';
 
 import type { AppDispatch, RootState } from '../services/store';
@@ -33,6 +35,7 @@ export const ProfilePage = (): React.JSX.Element => {
 
   return (
     <div className={styles.app}>
+      <AppHeader />
       <div className={styles.container}>
         <h2 className="text text_type_main-large mb-6">Профиль</h2>
 

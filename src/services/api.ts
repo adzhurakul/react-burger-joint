@@ -79,7 +79,7 @@ export const loginUser = createAsyncThunk<
   AuthResponse,
   LoginRequest,
   { rejectValue: string }
->('registerUser', async (request, { rejectWithValue }) => {
+>('auth/loginUser', async (request, { rejectWithValue }) => {
   try {
     const response = await fetch(LOGIN_URL, {
       method: 'POST',
@@ -101,7 +101,7 @@ export const registerUser = createAsyncThunk<
   AuthResponse,
   RegisterUserRequest,
   { rejectValue: string }
->('registerUser', async (request, { rejectWithValue }) => {
+>('auth/registerUser', async (request, { rejectWithValue }) => {
   try {
     const response = await fetch(REGISTER_USER_URL, {
       method: 'POST',
@@ -121,9 +121,9 @@ export const registerUser = createAsyncThunk<
 
 export const forgotPassword = createAsyncThunk<
   SuccessMessageResponse,
-  string, // аргумент: email
+  string,
   { rejectValue: string }
->('forgotPassword', async (email, { rejectWithValue }) => {
+>('auth/forgotPassword', async (email, { rejectWithValue }) => {
   try {
     const response = await fetch(FORGOT_PASSWORD_URL, {
       method: 'POST',
@@ -148,7 +148,7 @@ export const resetPassword = createAsyncThunk<
     token: string;
   },
   { rejectValue: string }
->('resetPassword', async (passwordAndToken, { rejectWithValue }) => {
+>('auth/resetPassword', async (passwordAndToken, { rejectWithValue }) => {
   try {
     const response = await fetch(RESET_PASSWORD_URL, {
       method: 'POST',
