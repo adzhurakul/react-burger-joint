@@ -1,8 +1,10 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
+import { createOrder, fetchIngredients } from '@services/api.ts';
+
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { TIngredient, ApiResponse, CreateOrderResponse } from '@utils/types';
+import type { TIngredient } from '@utils/types';
 
 type ConstructorIngredient = TIngredient & { uniqueId: string };
 
@@ -23,54 +25,6 @@ const initialState: IngredientsState = {
   loading: false,
   error: null,
 };
-
-const BASE_URL = 'https://norma.education-services.ru/api';
-
-const INGREDIENTS_URL = `${BASE_URL}/ingredients`;
-const ORDER_URL = `${BASE_URL}/orders`;
-
-async function checkResponse<T>(res: Response): Promise<T> {
-  if (!res.ok) {
-    throw new Error(`Ошибка: ${res.status}`);
-  }
-  return res.json() as Promise<T>;
-}
-
-export const fetchIngredients = createAsyncThunk<
-  TIngredient[],
-  void,
-  { rejectValue: string }
->('ingredients/fetchIngredients', async (_, { rejectWithValue }) => {
-  try {
-    const json = await fetch(INGREDIENTS_URL).then(checkResponse<ApiResponse>);
-    return json.data;
-  } catch (err: unknown) {
-    if (err instanceof Error) return rejectWithValue(err.message);
-    return rejectWithValue('Неизвестная ошибка');
-  }
-});
-
-export const createOrder = createAsyncThunk<
-  { id: number; ingredients: TIngredient[] },
-  string[],
-  { rejectValue: string }
->('ingredients/createOrder', async (ingredientIds, { rejectWithValue }) => {
-  try {
-    const json = await fetch(ORDER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ingredients: ingredientIds }),
-    }).then(checkResponse<CreateOrderResponse>);
-
-    return {
-      id: json.order.number,
-      ingredients: ingredientIds.map((id) => ({ _id: id }) as TIngredient),
-    };
-  } catch (err: unknown) {
-    if (err instanceof Error) return rejectWithValue(err.message);
-    return rejectWithValue('Неизвестная ошибка');
-  }
-});
 
 const ingredientsSlice = createSlice({
   name: 'ingredients',

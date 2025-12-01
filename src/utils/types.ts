@@ -13,9 +13,14 @@ export type TIngredient = {
   __v: number;
 };
 
-export type ApiResponse = {
+export type FetchApiResponse = {
   success: boolean;
   data: TIngredient[];
+};
+
+export type ResetPasswordResponse = {
+  success: boolean;
+  message: string;
 };
 
 export const ItemTypes = {

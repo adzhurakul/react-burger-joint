@@ -9,12 +9,8 @@ import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredi
 import { IngredientDetails } from '@components/burger-ingredients/details/ingredient-details.tsx';
 import { OrderDetails } from '@components/burger-ingredients/details/order-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
-import {
-  createOrder,
-  fetchIngredients,
-  setCreatedOrder,
-  setCurrentIngredient,
-} from '@services/ingredients-slice.ts';
+import { createOrder, fetchIngredients } from '@services/api.ts';
+import { setCreatedOrder, setCurrentIngredient } from '@services/ingredients-slice.ts';
 
 import type { AppDispatch, RootState } from '@services/store.ts';
 import type React from 'react';
