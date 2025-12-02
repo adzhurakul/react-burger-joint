@@ -21,6 +21,7 @@ type AuthState = {
   loading: boolean;
   error: string | null;
   message: string | null;
+  canResetPassword: boolean | null;
 };
 
 const REFRESH_TOKEN_NAME = 'refreshToken';
@@ -32,6 +33,7 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   message: null,
+  canResetPassword: false,
 };
 
 type CookieProps = {
@@ -119,7 +121,7 @@ export const authSlice = createSlice({
     builder.addCase(getUser.pending, setPending);
     builder.addCase(getUser.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload;
+      state.user = action.payload.user;
       state.message = 'Данные пользователя загружены';
     });
     builder.addCase(getUser.rejected, (state, action) => {
@@ -194,9 +196,11 @@ export const authSlice = createSlice({
     builder.addCase(forgotPassword.fulfilled, (state, action) => {
       state.loading = false;
       state.message = action.payload.message;
+      state.canResetPassword = true;
     });
     builder.addCase(forgotPassword.rejected, (state, action) => {
       state.loading = false;
+      state.canResetPassword = false;
       state.error = action.payload ?? 'Ошибка восстановления';
     });
 
@@ -205,6 +209,7 @@ export const authSlice = createSlice({
     builder.addCase(resetPassword.fulfilled, (state, action) => {
       state.loading = false;
       state.message = action.payload.message;
+      state.canResetPassword = false;
     });
     builder.addCase(resetPassword.rejected, (state, action) => {
       state.loading = false;

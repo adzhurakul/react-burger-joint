@@ -1,11 +1,12 @@
 import { Button, Input, EmailInput } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
 
-import { logoutUser } from '../services/api';
+import { logoutUser, getUser, updateUser } from '../services/api';
+import { getCookie } from '../services/auth-slice';
 
 import type { AppDispatch, RootState } from '../services/store';
 import type React from 'react';
@@ -15,22 +16,51 @@ import styles from './all-pages.module.css';
 export const ProfilePage = (): React.JSX.Element => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const [name, setName] = useState(user?.name ?? '');
-  const [email, setEmail] = useState(user?.email ?? '');
+  const refreshToken = useSelector((state: RootState) => state.auth.refreshToken);
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  const [originalName, setOriginalName] = useState('');
+  const [originalEmail, setOriginalEmail] = useState('');
+
+  useEffect(() => {
+    const token = getCookie('refreshToken');
+    if (token) {
+      void dispatch(getUser(token)).then((res) => {
+        if (res.payload && typeof res.payload !== 'string') {
+          setName(res.payload.user.name);
+          setEmail(res.payload.user.email);
+          setOriginalName(res.payload.user.name);
+          setOriginalEmail(res.payload.user.email);
+        }
+      });
+    }
+  }, [dispatch]);
+
   const handleLogout = (): void => {
-    if (!user) return;
-    const refreshToken = 'state.auth.refreshToken'; // todo
-    void dispatch(logoutUser(refreshToken)).then(() => {
-      void navigate('/');
-    });
+    if (!refreshToken) return;
+    void dispatch(logoutUser(refreshToken)).then(() => void navigate('/'));
   };
 
   const handleSave = (): void => {
-    // dispatch(updateUserProfile({ name, email, password })) ...
+    const token = getCookie('accessToken');
+    if (!token) return;
+
+    void dispatch(updateUser({ accessToken: token, name, email, password })).then(() => {
+      // после сохранения обновляем оригинальные значения
+      setOriginalName(name);
+      setOriginalEmail(email);
+      setPassword('');
+    });
+  };
+
+  const handleCancel = (): void => {
+    setName(originalName);
+    setEmail(originalEmail);
+    setPassword('');
   };
 
   return (
@@ -88,6 +118,14 @@ export const ProfilePage = (): React.JSX.Element => {
           <div className={styles.actions}>
             <Button onClick={handleSave} size="medium" type="primary" htmlType="button">
               Сохранить
+            </Button>
+            <Button
+              onClick={handleCancel}
+              size="medium"
+              type="secondary"
+              htmlType="button"
+            >
+              Отмена
             </Button>
             <Button
               onClick={handleLogout}

@@ -1,15 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import type {
-  FetchApiResponse,
+  AuthResponse,
   CreateOrderResponse,
-  TIngredient,
+  FetchApiResponse,
+  LoginRequest,
+  LogoutResponse,
   RegisterUserRequest,
   SuccessMessageResponse,
-  AuthResponse,
-  LoginRequest,
+  TIngredient,
   TokenRefreshResponse,
-  LogoutResponse,
 } from '@utils/types.ts';
 
 const BASE_URL = 'https://norma.education-services.ru/api';
@@ -60,27 +60,25 @@ export const updateUser = createAsyncThunk<
   }
 });
 
-export const getUser = createAsyncThunk<
-  AuthResponse['user'],
-  string,
-  { rejectValue: string }
->('auth/getUser', async (accessToken, { rejectWithValue }) => {
-  try {
-    const response = await fetch(USER_URL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: accessToken,
-      },
-    });
+export const getUser = createAsyncThunk<AuthResponse, string, { rejectValue: string }>(
+  'auth/getUser',
+  async (accessToken, { rejectWithValue }) => {
+    try {
+      const response = await fetch(USER_URL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: accessToken,
+        },
+      });
 
-    const json = await checkResponse<AuthResponse>(response);
-    return json.user;
-  } catch (err: unknown) {
-    if (err instanceof Error) return rejectWithValue(err.message);
-    return rejectWithValue('Неизвестная ошибка');
+      return await checkResponse<AuthResponse>(response);
+    } catch (err: unknown) {
+      if (err instanceof Error) return rejectWithValue(err.message);
+      return rejectWithValue('Неизвестная ошибка');
+    }
   }
-});
+);
 
 export const logoutUser = createAsyncThunk<
   LogoutResponse,
