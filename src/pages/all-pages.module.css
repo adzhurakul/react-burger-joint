@@ -22,11 +22,30 @@
   overflow: hidden;
 }
 
+main {
+  display: flex;
+  flex-direction: row; /* горизонтальное расположение */
+  justify-content: flex-start; /* слева */
+  align-items: flex-start;
+  gap: 40px; /* расстояние между боковой панелью и контентом */
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
 .container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+}
+
+.left_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: flex-start;
   min-height: 100vh;
 }
 

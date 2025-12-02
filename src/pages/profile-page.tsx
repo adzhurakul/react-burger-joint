@@ -10,7 +10,7 @@ import { logoutUser } from '../services/api';
 import type { AppDispatch, RootState } from '../services/store';
 import type React from 'react';
 
-import styles from './profile-page.module.css';
+import styles from './all-pages.module.css';
 
 export const ProfilePage = (): React.JSX.Element => {
   const navigate = useNavigate();
@@ -36,57 +36,70 @@ export const ProfilePage = (): React.JSX.Element => {
   return (
     <div className={styles.app}>
       <AppHeader />
-      <div className={styles.container}>
-        <h2 className="text text_type_main-large mb-6">Профиль</h2>
-
-        <div className={styles.field}>
-          <Input
-            name="name"
-            placeholder="Имя"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            size="default"
-            type="text"
-          />
-        </div>
-
-        <div className={styles.field}>
-          <EmailInput
-            name="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            isIcon={false}
-          />
-        </div>
-
-        <div className={styles.field}>
-          <Input
-            name="password"
-            placeholder="Новый пароль"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            size="default"
-            type={showPassword ? 'text' : 'password'}
-            icon={showPassword ? 'HideIcon' : 'ShowIcon'}
-            onIconClick={() => setShowPassword((prev) => !prev)}
-          />
-        </div>
-
-        <div className={styles.actions}>
-          <Button onClick={handleSave} size="medium" type="primary" htmlType="button">
-            Сохранить
-          </Button>
-          <Button
-            onClick={handleLogout}
-            size="medium"
-            type="secondary"
-            htmlType="button"
+      <main className={`${styles.main} pl-5 pr-5`}>
+        <div className={`${styles.left_container}`}>
+          <h1 className={`text text_type_main-medium mt-10 mb-5 pl-5`}>Профиль</h1>
+          <h1
+            className={`text text_type_main-medium mt-10 mb-5 pl-5 text_color_inactive`}
           >
-            Выйти
-          </Button>
+            История заказов
+          </h1>
+          <h1
+            className={`text text_type_main-medium mt-10 mb-5 pl-5 text_color_inactive`}
+          >
+            Выход
+          </h1>
         </div>
-      </div>
+        <div className={styles.container}>
+          <div className="mb-6">
+            <Input
+              name="name"
+              placeholder="Имя"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              size="default"
+              type="text"
+            />
+          </div>
+
+          <div className="mb-6">
+            <EmailInput
+              name="email"
+              placeholder="E-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              isIcon={false}
+            />
+          </div>
+
+          <div className="mb-6">
+            <Input
+              name="password"
+              placeholder="Новый пароль"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              size="default"
+              type={showPassword ? 'text' : 'password'}
+              icon={showPassword ? 'HideIcon' : 'ShowIcon'}
+              onIconClick={() => setShowPassword((prev) => !prev)}
+            />
+          </div>
+
+          <div className={styles.actions}>
+            <Button onClick={handleSave} size="medium" type="primary" htmlType="button">
+              Сохранить
+            </Button>
+            <Button
+              onClick={handleLogout}
+              size="medium"
+              type="secondary"
+              htmlType="button"
+            >
+              Выйти
+            </Button>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

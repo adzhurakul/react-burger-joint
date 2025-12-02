@@ -23,6 +23,7 @@ const REGISTER_USER_URL = `${BASE_URL}/auth/register`;
 const LOGIN_URL = `${BASE_URL}/auth/login`;
 const LOGOUT_URL = `${BASE_URL}/auth/logout`;
 const REFRESH_TOKEN_URL = `${BASE_URL}/auth/token`;
+const USER_URL = `${BASE_URL}/auth/user`;
 
 async function checkResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
@@ -30,6 +31,56 @@ async function checkResponse<T>(res: Response): Promise<T> {
   }
   return res.json() as Promise<T>;
 }
+
+export const updateUser = createAsyncThunk<
+  AuthResponse,
+  {
+    accessToken: string;
+    name?: string;
+    email?: string;
+    password?: string;
+  },
+  { rejectValue: string }
+>('auth/updateUser', async ({ accessToken, ...body }, { rejectWithValue }) => {
+  try {
+    const response = await fetch(USER_URL, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accessToken, // обязательно с Bearer если нужно
+      },
+      body: JSON.stringify(body),
+    });
+
+    const json = await checkResponse<AuthResponse>(response);
+    return json; // возвращаем весь объект, а не только user
+  } catch (err: unknown) {
+    if (err instanceof Error) return rejectWithValue(err.message);
+    return rejectWithValue('Неизвестная ошибка');
+  }
+});
+
+export const getUser = createAsyncThunk<
+  AuthResponse['user'],
+  string,
+  { rejectValue: string }
+>('auth/getUser', async (accessToken, { rejectWithValue }) => {
+  try {
+    const response = await fetch(USER_URL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: accessToken,
+      },
+    });
+
+    const json = await checkResponse<AuthResponse>(response);
+    return json.user;
+  } catch (err: unknown) {
+    if (err instanceof Error) return rejectWithValue(err.message);
+    return rejectWithValue('Неизвестная ошибка');
+  }
+});
 
 export const logoutUser = createAsyncThunk<
   LogoutResponse,

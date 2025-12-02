@@ -7,6 +7,8 @@ import {
   forgotPassword,
   resetPassword,
   refreshToken as refreshTokenThunk,
+  getUser,
+  updateUser,
 } from './api.ts';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -94,6 +96,36 @@ export const authSlice = createSlice({
       state.error = null;
       state.message = null;
     };
+
+    // --- UPDATE USER ---
+    builder.addCase(updateUser.pending, setPending);
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      state.message = 'Данные пользователя обновлены';
+
+      if (state.refreshToken) {
+        setCookie(REFRESH_TOKEN_NAME, state.refreshToken);
+      }
+    });
+    builder.addCase(updateUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload ?? 'Ошибка обновления данных пользователя';
+    });
+
+    // --- GET USER ---
+    builder.addCase(getUser.pending, setPending);
+    builder.addCase(getUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload;
+      state.message = 'Данные пользователя загружены';
+    });
+    builder.addCase(getUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload ?? 'Ошибка загрузки данных пользователя';
+    });
 
     // --- LOGOUT ---
     builder.addCase(logoutUser.pending, setPending);
