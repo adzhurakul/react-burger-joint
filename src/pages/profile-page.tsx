@@ -46,7 +46,7 @@ export const ProfilePage = (): React.JSX.Element => {
   };
 
   const handleSave = (): void => {
-    const token = getCookie('accessToken');
+    const token = getCookie('refreshToken');
     if (!token) return;
 
     void dispatch(updateUser({ accessToken: token, name, email, password })).then(() => {

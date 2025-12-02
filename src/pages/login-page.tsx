@@ -1,4 +1,4 @@
-import { Button, EmailInput, Input } from '@krgaa/react-developer-burger-ui-components';
+import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -39,8 +39,7 @@ export const LoginPage = (): React.JSX.Element => {
         <div className="text text_type_main-default mb-6">Вход</div>
 
         <div className="mb-6">
-          <EmailInput
-            isIcon
+          <Input
             name="email"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="E-mail"

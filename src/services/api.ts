@@ -29,7 +29,7 @@ async function checkResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     throw new Error(`Ошибка: ${res.status}`);
   }
-  return res.json() as Promise<T>;
+  return (await res.json()) as Promise<T>;
 }
 
 export const updateUser = createAsyncThunk<
@@ -47,13 +47,12 @@ export const updateUser = createAsyncThunk<
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: accessToken, // обязательно с Bearer если нужно
+        Authorization: accessToken,
       },
       body: JSON.stringify(body),
     });
 
-    const json = await checkResponse<AuthResponse>(response);
-    return json; // возвращаем весь объект, а не только user
+    return await checkResponse<AuthResponse>(response);
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
@@ -94,8 +93,7 @@ export const logoutUser = createAsyncThunk<
       body: JSON.stringify({ token: refreshTokenValue }),
     });
 
-    const json = await checkResponse<LogoutResponse>(response);
-    return json;
+    return await checkResponse<LogoutResponse>(response);
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
@@ -116,8 +114,7 @@ export const refreshToken = createAsyncThunk<
       body: JSON.stringify({ token: refreshTokenValue }),
     });
 
-    const json = await checkResponse<TokenRefreshResponse>(response);
-    return json;
+    return await checkResponse<TokenRefreshResponse>(response);
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
@@ -135,11 +132,10 @@ export const loginUser = createAsyncThunk<
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ request }),
+      body: JSON.stringify({ ...request }),
     });
 
-    const json = await checkResponse<AuthResponse>(response);
-    return json;
+    return await checkResponse<AuthResponse>(response);
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
@@ -157,11 +153,10 @@ export const registerUser = createAsyncThunk<
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ request }),
+      body: JSON.stringify({ ...request }),
     });
 
-    const json = await checkResponse<AuthResponse>(response);
-    return json;
+    return await checkResponse<AuthResponse>(response);
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
@@ -182,8 +177,7 @@ export const forgotPassword = createAsyncThunk<
       body: JSON.stringify({ email }),
     });
 
-    const json = await checkResponse<SuccessMessageResponse>(response);
-    return json;
+    return await checkResponse<SuccessMessageResponse>(response);
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
@@ -207,8 +201,7 @@ export const resetPassword = createAsyncThunk<
       body: JSON.stringify(passwordAndToken),
     });
 
-    const json = await checkResponse<SuccessMessageResponse>(response);
-    return json;
+    return await checkResponse<SuccessMessageResponse>(response);
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');

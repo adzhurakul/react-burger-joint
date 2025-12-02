@@ -1,82 +1,92 @@
-import { Button, EmailInput, Input } from '@krgaa/react-developer-burger-ui-components';
+import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
 
-import type React from 'react';
+import { registerUser } from '../services/api'; // путь подкорректируй
+
+import type { AppDispatch, RootState } from '../services/store';
 
 import styles from './all-pages.module.css';
 
 export const RegisterPage = (): React.JSX.Element => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const authState = useSelector((state: RootState) => state.auth);
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleRegister = async (): Promise<void> => {
+    try {
+      await dispatch(registerUser({ name, email, password })).unwrap();
+      void navigate('/');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className={styles.app}>
       <AppHeader />
       <div className={styles.container}>
         <div className="text text_type_main-default mb-6">Регистрация</div>
+
         <div className="mb-6">
           <Input
-            /*          ref={{
-            current: '[Circular]',
-          }}*/
-            errorText="Ошибка"
             name="name"
-            onChange={function fee() {
-              /* empty */
-            }}
-            onIconClick={function fee() {
-              /* empty */
-            }}
             placeholder="Имя"
             size="default"
             type="text"
-            value={''}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <div className="mb-6">
-          <EmailInput
-            isIcon
-            name="email"
-            onChange={function fee() {
-              /* empty */
-            }}
-            placeholder="E-mail"
-            value={''}
-          />
-        </div>
+
         <div className="mb-6">
           <Input
-            /*          ref={{
-            current: '[Circular]',
-          }}*/
-            errorText="Ошибка"
-            icon="ShowIcon" // todo: HideIcon
-            name="name"
-            onChange={function fee() {
-              /* empty */
-            }}
-            onIconClick={function fee() {
-              /* empty */
-            }}
-            placeholder="Пароль"
-            size="default"
-            type="text"
-            value={''}
+            name="email"
+            placeholder="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
+
+        <div className="mb-6">
+          <Input
+            name="password"
+            placeholder="Пароль"
+            size="default"
+            type={showPassword ? 'text' : 'password'}
+            icon={showPassword ? 'HideIcon' : 'ShowIcon'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onIconClick={() => setShowPassword((prev) => !prev)}
+          />
+        </div>
+
+        {authState.error && (
+          <div className="text text_type_main-default text_color_error mb-4">
+            {authState.error}
+          </div>
+        )}
+
         <div className="mb-20">
           <Button
-            onClick={function fee() {
-              /* empty */
-            }}
+            onClick={() => void handleRegister()}
             size="small"
             type="primary"
-            htmlType={'button'}
+            htmlType="button"
+            disabled={!name || !email || !password || authState.loading}
           >
-            Войти
+            {authState.loading ? 'Регистрация...' : 'Зарегистрироваться'}
           </Button>
         </div>
+
         <div className={styles.actions}>
           <div className="text text_type_main-default text_color_inactive">
             Уже зарегистрированы?
@@ -85,7 +95,7 @@ export const RegisterPage = (): React.JSX.Element => {
             onClick={(): void => void navigate('/login')}
             size="medium"
             type="secondary"
-            htmlType={'button'}
+            htmlType="button"
           >
             Войти
           </Button>
