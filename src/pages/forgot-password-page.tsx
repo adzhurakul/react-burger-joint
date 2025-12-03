@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
 
-import { forgotPassword } from '../services/api'; // путь подкорректируй
+import { forgotPassword } from '../services/api';
 
 import type { AppDispatch } from '../services/store';
 

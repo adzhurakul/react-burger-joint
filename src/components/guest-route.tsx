@@ -34,9 +34,6 @@ export const GuestRouteElement = ({ element }: GuestRouteProps): React.JSX.Eleme
     void init();
   }, [dispatch]);
 
-  // Пока не загрузили инфу о пользователе — ничего не рендерим
   if (!isUserLoaded) return <></>;
-
-  // Если пользователь уже авторизован — не пускаем на страницу (логин/рег)
   return user ? <Navigate to="/" replace /> : element;
 };

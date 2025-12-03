@@ -24,13 +24,18 @@
 
 main {
   display: flex;
-  flex-direction: row; /* горизонтальное расположение */
-  justify-content: flex-start; /* слева */
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: flex-start;
-  gap: 40px; /* расстояние между боковой панелью и контентом */
+  gap: 40px;
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
+}
+
+.profile_text {
+  display: block;
+  text-decoration: none;
 }
 
 .container {

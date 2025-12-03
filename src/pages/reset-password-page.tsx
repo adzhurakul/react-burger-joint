@@ -35,7 +35,7 @@ export const ResetPasswordPage = (): React.JSX.Element => {
 
       if (result.success) {
         setMessage(result.message);
-        setTimeout(() => void navigate('/login'), 1500); // редирект на страницу входа
+        setTimeout(() => void navigate('/login'), 1500);
       }
     } catch (err) {
       setError(err as string);

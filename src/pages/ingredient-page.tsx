@@ -22,7 +22,6 @@ export const IngredientPage = (): JSX.Element => {
 
   useEffect(() => {
     if (!allIngredients || allIngredients.length === 0) {
-      // Если ингредиенты ещё не загружены — загрузим их
       void dispatch(fetchIngredients());
     }
   }, [allIngredients, dispatch]);

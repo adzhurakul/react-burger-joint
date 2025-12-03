@@ -23,7 +23,6 @@ export const ProfilePage = (): React.JSX.Element => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  //const [showPassword, setShowPassword] = useState(false);
   const [originalName, setOriginalName] = useState('');
   const [originalEmail, setOriginalEmail] = useState('');
 
@@ -76,7 +75,7 @@ export const ProfilePage = (): React.JSX.Element => {
               isProfileActive ? 'text_color_primary' : 'text_color_inactive'
             }`}
           >
-            <h1>Профиль</h1>
+            Профиль
           </Link>
 
           <Link
@@ -132,9 +131,6 @@ export const ProfilePage = (): React.JSX.Element => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   size="default"
-                  //type={showPassword ? 'text' : 'password'}
-                  //icon={showPassword ? 'HideIcon' : 'ShowIcon'}
-                  //onIconClick={() => setShowPassword((prev) => !prev)}
                 />
               </div>
 

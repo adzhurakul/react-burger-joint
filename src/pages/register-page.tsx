@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
 
-import { registerUser } from '../services/api'; // путь подкорректируй
+import { registerUser } from '../services/api';
 
 import type { AppDispatch, RootState } from '../services/store';
 
