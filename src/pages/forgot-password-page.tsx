@@ -1,4 +1,4 @@
-import { Button, EmailInput } from '@krgaa/react-developer-burger-ui-components';
+import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -45,8 +45,7 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
         <div className="text text_type_main-default mb-6">Восстановление пароля</div>
 
         <div className="mb-6">
-          <EmailInput
-            isIcon
+          <Input
             name="email"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Укажите e-mail"

@@ -1,6 +1,7 @@
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { getIngredientCount } from '@components/burger-ingredients/get-ingredient-count.tsx';
 import { ItemTypes } from '@utils/types.ts';
@@ -19,11 +20,12 @@ const BurgerIngredientCart = ({
   ingredient,
   onClick,
 }: TBurgerIngredientCartProps): React.JSX.Element => {
-  console.log(ingredient);
-
   const constructorIngredients = useSelector(
     (state: RootState) => state.ingredients.constructorIngredients
   );
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [{ isDragging }, dragRef] = useDrag({
     type: ItemTypes.INGREDIENT,
@@ -39,11 +41,18 @@ const BurgerIngredientCart = ({
 
   const count = getIngredientCount(constructorIngredients, ingredient._id);
 
+  const handleClick = (): void => {
+    void navigate(`/ingredients/${ingredient._id}`, {
+      state: { backgroundLocation: location },
+    });
+    onClick?.(ingredient);
+  };
+
   return (
     <div
       ref={refCallback}
       className={`${styles.cart_item} ${isDragging ? styles.dragging : ''}`}
-      onClick={() => onClick?.(ingredient)}
+      onClick={handleClick}
     >
       <img className={styles.cart_image} src={ingredient.image} alt={ingredient.name} />
 
@@ -52,7 +61,7 @@ const BurgerIngredientCart = ({
         <CurrencyIcon type="primary" />
       </div>
 
-      <p className={`${styles.name}text text_type_main-default`}>{ingredient.name}</p>
+      <p className={`${styles.name} text text_type_main-default`}>{ingredient.name}</p>
       {count > 0 && (
         <div className={styles.counter}>
           <Counter count={count} size="default" />

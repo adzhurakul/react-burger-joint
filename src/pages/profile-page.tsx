@@ -1,33 +1,34 @@
-import { Button, Input, EmailInput } from '@krgaa/react-developer-burger-ui-components';
+import { Button, EmailInput } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
+import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from '@utils/types.ts';
 
 import { logoutUser, getUser, updateUser } from '../services/api';
-import { getCookie } from '../services/auth-slice';
+import { getLocal } from '../services/auth-slice';
 
-import type { AppDispatch, RootState } from '../services/store';
-import type React from 'react';
+import type { AppDispatch } from '../services/store';
 
 import styles from './all-pages.module.css';
 
 export const ProfilePage = (): React.JSX.Element => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const refreshToken = useSelector((state: RootState) => state.auth.refreshToken);
+  const location = useLocation();
+  const isProfileActive = location.pathname === '/profile';
+  const isOrdersActive = location.pathname.endsWith('/orders');
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-
+  //const [showPassword, setShowPassword] = useState(false);
   const [originalName, setOriginalName] = useState('');
   const [originalEmail, setOriginalEmail] = useState('');
 
   useEffect(() => {
-    const token = getCookie('refreshToken');
+    const token = getLocal<string>(ACCESS_TOKEN_NAME);
     if (token) {
       void dispatch(getUser(token)).then((res) => {
         if (res.payload && typeof res.payload !== 'string') {
@@ -41,16 +42,14 @@ export const ProfilePage = (): React.JSX.Element => {
   }, [dispatch]);
 
   const handleLogout = (): void => {
-    if (!refreshToken) return;
-    void dispatch(logoutUser(refreshToken)).then(() => void navigate('/'));
+    const token = getLocal<string>(REFRESH_TOKEN_NAME);
+    if (token) {
+      void dispatch(logoutUser(token)).then(() => void navigate('/login'));
+    }
   };
 
   const handleSave = (): void => {
-    const token = getCookie('refreshToken');
-    if (!token) return;
-
-    void dispatch(updateUser({ accessToken: token, name, email, password })).then(() => {
-      // после сохранения обновляем оригинальные значения
+    void dispatch(updateUser({ name, email, password })).then(() => {
       setOriginalName(name);
       setOriginalEmail(email);
       setPassword('');
@@ -63,79 +62,101 @@ export const ProfilePage = (): React.JSX.Element => {
     setPassword('');
   };
 
+  const hasChanges = name !== originalName || email !== originalEmail || password !== '';
+
   return (
     <div className={styles.app}>
       <AppHeader />
       <main className={`${styles.main} pl-5 pr-5`}>
-        <div className={`${styles.left_container}`}>
-          <h1 className={`text text_type_main-medium mt-10 mb-5 pl-5`}>Профиль</h1>
-          <h1
-            className={`text text_type_main-medium mt-10 mb-5 pl-5 text_color_inactive`}
+        <div className={styles.left_container}>
+          <Link
+            to="/profile"
+            style={{ textDecoration: 'none', display: 'block' }}
+            className={`text text_type_main-medium mt-10 mb-5 pl-5 ${
+              isProfileActive ? 'text_color_primary' : 'text_color_inactive'
+            }`}
+          >
+            <h1>Профиль</h1>
+          </Link>
+
+          <Link
+            to="/profile/orders"
+            style={{ textDecoration: 'none', display: 'block' }}
+            className={`text text_type_main-medium mt-10 mb-5 pl-5 ${
+              isOrdersActive ? 'text_color_primary' : 'text_color_inactive'
+            }`}
           >
             История заказов
-          </h1>
-          <h1
-            className={`text text_type_main-medium mt-10 mb-5 pl-5 text_color_inactive`}
-          >
+          </Link>
+
+          <Button onClick={handleLogout} size="large" type="secondary" htmlType="button">
             Выход
-          </h1>
+          </Button>
         </div>
+
         <div className={styles.container}>
-          <div className="mb-6">
-            <Input
-              name="name"
-              placeholder="Имя"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              size="default"
-              type="text"
-            />
-          </div>
-
-          <div className="mb-6">
-            <EmailInput
-              name="email"
-              placeholder="E-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              isIcon={false}
-            />
-          </div>
-
-          <div className="mb-6">
-            <Input
-              name="password"
-              placeholder="Новый пароль"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              size="default"
-              type={showPassword ? 'text' : 'password'}
-              icon={showPassword ? 'HideIcon' : 'ShowIcon'}
-              onIconClick={() => setShowPassword((prev) => !prev)}
-            />
-          </div>
-
-          <div className={styles.actions}>
-            <Button onClick={handleSave} size="medium" type="primary" htmlType="button">
-              Сохранить
-            </Button>
-            <Button
-              onClick={handleCancel}
-              size="medium"
-              type="secondary"
-              htmlType="button"
+          {!isOrdersActive && (
+            <form
+              className={styles.form}
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSave();
+              }}
             >
-              Отмена
-            </Button>
-            <Button
-              onClick={handleLogout}
-              size="medium"
-              type="secondary"
-              htmlType="button"
-            >
-              Выйти
-            </Button>
-          </div>
+              <div className="mb-6">
+                <EmailInput
+                  isIcon
+                  name="name"
+                  placeholder="Имя"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  size="default"
+                />
+              </div>
+
+              <div className="mb-6">
+                <EmailInput
+                  isIcon
+                  name="email"
+                  placeholder="E-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-6">
+                <EmailInput
+                  isIcon
+                  name="password"
+                  placeholder="Пароль"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  size="default"
+                  //type={showPassword ? 'text' : 'password'}
+                  //icon={showPassword ? 'HideIcon' : 'ShowIcon'}
+                  //onIconClick={() => setShowPassword((prev) => !prev)}
+                />
+              </div>
+
+              {hasChanges && (
+                <div className={styles.actions}>
+                  <Button size="medium" type="primary" htmlType="submit">
+                    Сохранить
+                  </Button>
+                  <Button
+                    onClick={handleCancel}
+                    size="medium"
+                    type="secondary"
+                    htmlType="button"
+                  >
+                    Отмена
+                  </Button>
+                </div>
+              )}
+            </form>
+          )}
+
+          <Outlet />
         </div>
       </main>
     </div>

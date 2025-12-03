@@ -79,3 +79,9 @@ export type CreateOrderResponse = {
     number: number;
   };
 };
+
+export type LocationState = {
+  background?: Location;
+};
+export const REFRESH_TOKEN_NAME = 'refreshToken';
+export const ACCESS_TOKEN_NAME = 'accessToken';

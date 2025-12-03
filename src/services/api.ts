@@ -1,5 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
+import { fetchWithRefresh } from '@services/fetch-with-refresh.ts';
+
 import type {
   AuthResponse,
   CreateOrderResponse,
@@ -34,25 +36,14 @@ async function checkResponse<T>(res: Response): Promise<T> {
 
 export const updateUser = createAsyncThunk<
   AuthResponse,
-  {
-    accessToken: string;
-    name?: string;
-    email?: string;
-    password?: string;
-  },
+  { name?: string; email?: string; password?: string },
   { rejectValue: string }
->('auth/updateUser', async ({ accessToken, ...body }, { rejectWithValue }) => {
+>('auth/updateUser', async (body, { rejectWithValue }) => {
   try {
-    const response = await fetch(USER_URL, {
+    return await fetchWithRefresh<AuthResponse>(USER_URL, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: accessToken,
-      },
       body: JSON.stringify(body),
     });
-
-    return await checkResponse<AuthResponse>(response);
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
@@ -61,17 +52,9 @@ export const updateUser = createAsyncThunk<
 
 export const getUser = createAsyncThunk<AuthResponse, string, { rejectValue: string }>(
   'auth/getUser',
-  async (accessToken, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(USER_URL, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: accessToken,
-        },
-      });
-
-      return await checkResponse<AuthResponse>(response);
+      return await fetchWithRefresh<AuthResponse>(USER_URL, { method: 'GET' });
     } catch (err: unknown) {
       if (err instanceof Error) return rejectWithValue(err.message);
       return rejectWithValue('Неизвестная ошибка');
@@ -228,11 +211,10 @@ export const createOrder = createAsyncThunk<
   { rejectValue: string }
 >('ingredients/createOrder', async (ingredientIds, { rejectWithValue }) => {
   try {
-    const json = await fetch(ORDER_URL, {
+    const json = await fetchWithRefresh<CreateOrderResponse>(ORDER_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ingredients: ingredientIds }),
-    }).then(checkResponse<CreateOrderResponse>);
+    });
 
     return {
       id: json.order.number,

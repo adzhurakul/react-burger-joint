@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
+import { ACCESS_TOKEN_NAME } from '@utils/types.ts';
+
 import { getUser } from '../services/api';
-import { getCookie } from '../services/auth-slice';
+import { getLocal } from '../services/auth-slice';
 
 import type { RootState, AppDispatch } from '../services/store';
 import type React from 'react';
@@ -22,9 +24,13 @@ export const ProtectedRouteElement = ({
 
   useEffect(() => {
     const init = async (): Promise<void> => {
-      const token = getCookie('refreshToken');
+      const token = getLocal<string>(ACCESS_TOKEN_NAME);
       if (token) {
-        await dispatch(getUser(token));
+        await dispatch(getUser(token)).then((res) => {
+          if (res.payload && typeof res.payload !== 'string') {
+            console.log('ProtectedRouteElement getUser ' + res.payload.user.name);
+          }
+        });
       }
       setUserLoaded(true);
     };
