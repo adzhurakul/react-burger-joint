@@ -1,6 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
+import { setLocal } from '@services/auth-slice.ts';
 import { fetchWithRefresh } from '@services/fetch-with-refresh.ts';
+import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from '@utils/types.ts';
 
 import type {
   AuthResponse,
@@ -62,48 +64,7 @@ export const getUser = createAsyncThunk<AuthResponse, string, { rejectValue: str
   }
 );
 
-export const logoutUser = createAsyncThunk<
-  LogoutResponse,
-  string,
-  { rejectValue: string }
->('auth/logoutUser', async (refreshTokenValue, { rejectWithValue }) => {
-  try {
-    const response = await fetch(LOGOUT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token: refreshTokenValue }),
-    });
-
-    return await checkResponse<LogoutResponse>(response);
-  } catch (err: unknown) {
-    if (err instanceof Error) return rejectWithValue(err.message);
-    return rejectWithValue('Неизвестная ошибка');
-  }
-});
-
-export const refreshToken = createAsyncThunk<
-  TokenRefreshResponse,
-  string,
-  { rejectValue: string }
->('auth/refreshToken', async (refreshTokenValue, { rejectWithValue }) => {
-  try {
-    const response = await fetch(REFRESH_TOKEN_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token: refreshTokenValue }),
-    });
-
-    return await checkResponse<TokenRefreshResponse>(response);
-  } catch (err: unknown) {
-    if (err instanceof Error) return rejectWithValue(err.message);
-    return rejectWithValue('Неизвестная ошибка');
-  }
-});
-
+// LOGIN
 export const loginUser = createAsyncThunk<
   AuthResponse,
   LoginRequest,
@@ -112,19 +73,23 @@ export const loginUser = createAsyncThunk<
   try {
     const response = await fetch(LOGIN_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...request }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
     });
+    const data = (await response.json()) as AuthResponse;
 
-    return await checkResponse<AuthResponse>(response);
+    // побочный эффект — токены сохраняем в thunk
+    setLocal(ACCESS_TOKEN_NAME, data.accessToken, { expires: 1200 });
+    setLocal(REFRESH_TOKEN_NAME, data.refreshToken);
+
+    return data;
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');
   }
 });
 
+// REGISTER
 export const registerUser = createAsyncThunk<
   AuthResponse,
   RegisterUserRequest,
@@ -133,13 +98,64 @@ export const registerUser = createAsyncThunk<
   try {
     const response = await fetch(REGISTER_USER_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...request }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
     });
+    const data = (await response.json()) as AuthResponse;
 
-    return await checkResponse<AuthResponse>(response);
+    setLocal(ACCESS_TOKEN_NAME, data.accessToken, { expires: 1200 });
+    setLocal(REFRESH_TOKEN_NAME, data.refreshToken);
+
+    return data;
+  } catch (err: unknown) {
+    if (err instanceof Error) return rejectWithValue(err.message);
+    return rejectWithValue('Неизвестная ошибка');
+  }
+});
+
+// REFRESH TOKEN
+export const refreshToken = createAsyncThunk<
+  TokenRefreshResponse,
+  string,
+  { rejectValue: string }
+>('auth/refreshToken', async (refreshTokenValue, { rejectWithValue }) => {
+  try {
+    const response = await fetch(REFRESH_TOKEN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: refreshTokenValue }),
+    });
+    const data = (await response.json()) as TokenRefreshResponse;
+
+    setLocal(ACCESS_TOKEN_NAME, data.accessToken, { expires: 1200 });
+    setLocal(REFRESH_TOKEN_NAME, data.refreshToken);
+
+    return data;
+  } catch (err: unknown) {
+    if (err instanceof Error) return rejectWithValue(err.message);
+    return rejectWithValue('Неизвестная ошибка');
+  }
+});
+
+// LOGOUT
+export const logoutUser = createAsyncThunk<
+  LogoutResponse,
+  string,
+  { rejectValue: string }
+>('auth/logoutUser', async (refreshTokenValue, { rejectWithValue }) => {
+  try {
+    const response = await fetch(LOGOUT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: refreshTokenValue }),
+    });
+    const data = (await response.json()) as LogoutResponse;
+
+    // Очистка localStorage при выходе
+    setLocal(ACCESS_TOKEN_NAME, '');
+    setLocal(REFRESH_TOKEN_NAME, '');
+
+    return data;
   } catch (err: unknown) {
     if (err instanceof Error) return rejectWithValue(err.message);
     return rejectWithValue('Неизвестная ошибка');

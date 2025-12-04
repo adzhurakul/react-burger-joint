@@ -33,66 +33,74 @@ export const RegisterPage = (): React.JSX.Element => {
   return (
     <div className={styles.app}>
       <AppHeader />
+
       <div className={styles.container}>
         <div className="text text_type_main-default mb-6">Регистрация</div>
 
-        <div className="mb-6">
-          <Input
-            name="name"
-            placeholder="Имя"
-            size="default"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-6">
-          <Input
-            name="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-6">
-          <Input
-            name="password"
-            placeholder="Пароль"
-            size="default"
-            type={showPassword ? 'text' : 'password'}
-            icon={showPassword ? 'HideIcon' : 'ShowIcon'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onIconClick={() => setShowPassword((prev) => !prev)}
-          />
-        </div>
-
-        {authState.error && (
-          <div className="text text_type_main-default text_color_error mb-4">
-            {authState.error}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleRegister();
+          }}
+          className={styles.form}
+        >
+          <div className="mb-6">
+            <Input
+              name="name"
+              placeholder="Имя"
+              size="default"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
-        )}
 
-        <div className="mb-20">
-          <Button
-            onClick={() => void handleRegister()}
-            size="small"
-            type="primary"
-            htmlType="button"
-            disabled={!name || !email || !password || authState.loading}
-          >
-            {authState.loading ? 'Регистрация...' : 'Зарегистрироваться'}
-          </Button>
-        </div>
+          <div className="mb-6">
+            <Input
+              name="email"
+              placeholder="E-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-6">
+            <Input
+              name="password"
+              placeholder="Пароль"
+              size="default"
+              type={showPassword ? 'text' : 'password'}
+              icon={showPassword ? 'HideIcon' : 'ShowIcon'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onIconClick={() => setShowPassword((prev) => !prev)}
+            />
+          </div>
+
+          {authState.error && (
+            <div className="text text_type_main-default text_color_error mb-4">
+              {authState.error}
+            </div>
+          )}
+
+          <div className={`${styles.button_wrapper} mb-20`}>
+            <Button
+              size="small"
+              type="primary"
+              htmlType="submit"
+              disabled={!name || !email || !password || authState.loading}
+            >
+              {authState.loading ? 'Регистрация...' : 'Зарегистрироваться'}
+            </Button>
+          </div>
+        </form>
 
         <div className={styles.actions}>
           <div className="text text_type_main-default text_color_inactive">
             Уже зарегистрированы?
           </div>
           <Button
-            onClick={(): void => void navigate('/login')}
+            onClick={() => void navigate('/login')}
             size="medium"
             type="secondary"
             htmlType="button"

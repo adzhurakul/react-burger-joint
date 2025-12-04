@@ -109,11 +109,6 @@ export const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
       state.message = 'Данные пользователя обновлены';
-
-      if (state.refreshToken) {
-        setLocal<string>(ACCESS_TOKEN_NAME, state.accessToken, { expires: 1200 });
-        setLocal<string>(REFRESH_TOKEN_NAME, state.refreshToken);
-      }
     });
     builder.addCase(updateUser.rejected, (state, action) => {
       state.loading = false;
@@ -142,9 +137,6 @@ export const authSlice = createSlice({
         state.accessToken = null;
         state.refreshToken = null;
         state.message = action.payload.message;
-
-        setLocal<string>(ACCESS_TOKEN_NAME, '');
-        setLocal<string>(REFRESH_TOKEN_NAME, '');
       }
     );
     builder.addCase(logoutUser.rejected, (state, action) => {
@@ -159,10 +151,6 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
-
-      setLocal<string>(ACCESS_TOKEN_NAME, state.accessToken, { expires: 1200 });
-      setLocal<string>(REFRESH_TOKEN_NAME, state.refreshToken);
-
       state.message = 'Успешная авторизация';
     });
     builder.addCase(loginUser.rejected, (state, action) => {
@@ -176,10 +164,6 @@ export const authSlice = createSlice({
       state.loading = false;
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
-
-      setLocal<string>(ACCESS_TOKEN_NAME, state.accessToken, { expires: 1200 });
-      setLocal<string>(REFRESH_TOKEN_NAME, state.refreshToken);
-
       state.message = 'Токен обновлён';
     });
     builder.addCase(refreshTokenThunk.rejected, (state, action) => {
@@ -194,10 +178,6 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
-
-      setLocal<string>(ACCESS_TOKEN_NAME, state.accessToken, { expires: 1200 });
-      setLocal<string>(REFRESH_TOKEN_NAME, state.refreshToken);
-
       state.message = 'Успешная регистрация';
     });
     builder.addCase(registerUser.rejected, (state, action) => {

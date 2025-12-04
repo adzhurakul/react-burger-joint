@@ -25,7 +25,8 @@ export const ResetPasswordPage = (): React.JSX.Element => {
 
   const togglePasswordVisibility = (): void => setShowPassword((prev) => !prev);
 
-  const handleResetPassword = async (): Promise<void> => {
+  const handleResetPassword = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault();
     setLoading(true);
     setError(null);
     setMessage(null);
@@ -50,54 +51,60 @@ export const ResetPasswordPage = (): React.JSX.Element => {
       <div className={styles.container}>
         <div className="text text_type_main-default mb-6">Сброс пароля</div>
 
-        <div className="mb-6">
-          <Input
-            errorText="Ошибка"
-            icon={showPassword ? 'HideIcon' : 'ShowIcon'}
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            onIconClick={togglePasswordVisibility}
-            placeholder="Введите новый пароль"
-            size="default"
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-          />
-        </div>
-
-        <div className="mb-6">
-          <Input
-            errorText="Ошибка"
-            name="token"
-            onChange={(e) => setToken(e.target.value)}
-            placeholder="Введите код из письма"
-            size="default"
-            type="text"
-            value={token}
-          />
-        </div>
-
-        {error && (
-          <div className="text text_type_main-default text_color_error mb-4">
-            {error}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleResetPassword(e);
+          }}
+        >
+          <div className="mb-6">
+            <Input
+              errorText="Ошибка"
+              icon={showPassword ? 'HideIcon' : 'ShowIcon'}
+              name="password"
+              onChange={(e) => setPassword(e.target.value)}
+              onIconClick={togglePasswordVisibility}
+              placeholder="Введите новый пароль"
+              size="default"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+            />
           </div>
-        )}
-        {message && (
-          <div className="text text_type_main-default text_color_success mb-4">
-            {message}
-          </div>
-        )}
 
-        <div className="mb-20">
-          <Button
-            onClick={() => void handleResetPassword()}
-            size="small"
-            type="primary"
-            htmlType="button"
-            disabled={loading || !password || !token}
-          >
-            {loading ? 'Отправка...' : 'Сохранить'}
-          </Button>
-        </div>
+          <div className="mb-6">
+            <Input
+              errorText="Ошибка"
+              name="token"
+              onChange={(e) => setToken(e.target.value)}
+              placeholder="Введите код из письма"
+              size="default"
+              type="text"
+              value={token}
+            />
+          </div>
+
+          {error && (
+            <div className="text text_type_main-default text_color_error mb-4">
+              {error}
+            </div>
+          )}
+          {message && (
+            <div className="text text_type_main-default text_color_success mb-4">
+              {message}
+            </div>
+          )}
+
+          <div className={`${styles.button_wrapper} mb-20`}>
+            <Button
+              size="small"
+              type="primary"
+              htmlType="submit"
+              disabled={loading || !password || !token}
+            >
+              {loading ? 'Отправка...' : 'Сохранить'}
+            </Button>
+          </div>
+        </form>
 
         <div className={`${styles.actions} mb-4`}>
           <div className="text text_type_main-default text_color_inactive">

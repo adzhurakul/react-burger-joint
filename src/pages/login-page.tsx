@@ -19,6 +19,8 @@ export const LoginPage = (): React.JSX.Element => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  const togglePasswordVisibility = (): void => setShowPassword((prev) => !prev);
+
   const handleLogin = async (): Promise<void> => {
     try {
       const result = await dispatch(loginUser({ email, password })).unwrap();
@@ -30,47 +32,47 @@ export const LoginPage = (): React.JSX.Element => {
     }
   };
 
-  const togglePasswordVisibility = (): void => setShowPassword((prev) => !prev);
-
   return (
     <div className={styles.app}>
       <AppHeader />
       <div className={styles.container}>
         <div className="text text_type_main-default mb-6">Вход</div>
 
-        <div className="mb-6">
-          <Input
-            name="email"
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="E-mail"
-            value={email}
-          />
-        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleLogin(); // async функция вызывается через void
+          }}
+        >
+          <div className="mb-6">
+            <Input
+              name="email"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="E-mail"
+              value={email}
+            />
+          </div>
 
-        <div className="mb-6">
-          <Input
-            errorText="Ошибка"
-            icon={showPassword ? 'HideIcon' : 'ShowIcon'}
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            onIconClick={togglePasswordVisibility}
-            placeholder="Пароль"
-            size="default"
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-          />
-        </div>
+          <div className="mb-6">
+            <Input
+              errorText="Ошибка"
+              icon={showPassword ? 'HideIcon' : 'ShowIcon'}
+              name="password"
+              onChange={(e) => setPassword(e.target.value)}
+              onIconClick={togglePasswordVisibility}
+              placeholder="Пароль"
+              size="default"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+            />
+          </div>
 
-        <div className="mb-20">
-          <Button
-            onClick={() => void handleLogin()}
-            size="small"
-            type="primary"
-            htmlType="button"
-          >
-            Войти
-          </Button>
-        </div>
+          <div className={`${styles.button_wrapper} mb-20`}>
+            <Button size="small" type="primary" htmlType="submit">
+              Войти
+            </Button>
+          </div>
+        </form>
 
         <div className={`${styles.actions} mb-4`}>
           <div className="text text_type_main-default text_color_inactive">

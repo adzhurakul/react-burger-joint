@@ -44,37 +44,43 @@ export const ForgotPasswordPage = (): React.JSX.Element => {
       <div className={styles.container}>
         <div className="text text_type_main-default mb-6">Восстановление пароля</div>
 
-        <div className="mb-6">
-          <Input
-            name="email"
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Укажите e-mail"
-            value={email}
-          />
-        </div>
-
-        {error && (
-          <div className="text text_type_main-default text_color_error mb-4">
-            {error}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleForgotPassword(); // async вызывается через void
+          }}
+        >
+          <div className="mb-6">
+            <Input
+              name="email"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Укажите e-mail"
+              value={email}
+            />
           </div>
-        )}
-        {message && (
-          <div className="text text_type_main-default text_color_success mb-4">
-            {message}
-          </div>
-        )}
 
-        <div className="mb-20">
-          <Button
-            onClick={() => void handleForgotPassword()}
-            size="small"
-            type="primary"
-            htmlType="button"
-            disabled={loading || !email}
-          >
-            {loading ? 'Отправка...' : 'Восстановить'}
-          </Button>
-        </div>
+          {error && (
+            <div className="text text_type_main-default text_color_error mb-4">
+              {error}
+            </div>
+          )}
+          {message && (
+            <div className="text text_type_main-default text_color_success mb-4">
+              {message}
+            </div>
+          )}
+
+          <div className={`${styles.button_wrapper} mb-20`}>
+            <Button
+              size="small"
+              type="primary"
+              htmlType="submit"
+              disabled={loading || !email}
+            >
+              {loading ? 'Отправка...' : 'Восстановить'}
+            </Button>
+          </div>
+        </form>
 
         <div className={`${styles.actions} mb-4`}>
           <div className="text text_type_main-default text_color_inactive">
