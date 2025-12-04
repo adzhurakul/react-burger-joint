@@ -9,7 +9,7 @@ import {
   ResetPasswordPage,
 } from '@/pages';
 import { useSelector } from 'react-redux';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { IngredientDetails } from '@components/burger-ingredients/details/ingredient-details.tsx';
 import { GuestRouteElement } from '@components/guest-route.tsx';
@@ -21,18 +21,36 @@ import type { RootState } from '@services/store.ts';
 import type { LocationState } from '@utils/types.ts';
 import type React from 'react';
 
+const IngredientModalWrapper = (): React.JSX.Element | null => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  const { allIngredients } = useSelector((state: RootState) => state.ingredients);
+
+  const ingredient = allIngredients.find((item) => item._id === id);
+
+  if (!ingredient) return null;
+
+  return (
+    <Modal onClose={() => void navigate(-1)} header="Детали ингредиента">
+      <IngredientDetails ingredient={ingredient} />
+    </Modal>
+  );
+};
+
 export const App = (): React.JSX.Element => {
   const location = useLocation();
-  const navigate = useNavigate();
   const state = location.state as LocationState;
   const background = state?.background;
 
-  const currentIngredient = useSelector(
-    (state: RootState) => state.ingredients.currentIngredient
-  );
-
   return (
     <>
+      {background && (
+        <Routes>
+          <Route path="/ingredients/:id" element={<IngredientModalWrapper />} />
+        </Routes>
+      )}
+
       <Routes location={background ?? location}>
         <Route path="/" element={<BurgerConstructorPage />} />
         <Route path="/login" element={<GuestRouteElement element={<LoginPage />} />} />
@@ -57,19 +75,6 @@ export const App = (): React.JSX.Element => {
         </Route>
         <Route path="/ingredients/:id" element={<IngredientPage />} />
       </Routes>
-
-      {background && currentIngredient && (
-        <Routes>
-          <Route
-            path="/ingredients/:id"
-            element={
-              <Modal onClose={() => void navigate(-1)} header="Детали ингредиента">
-                <IngredientDetails ingredient={currentIngredient} />
-              </Modal>
-            }
-          />
-        </Routes>
-      )}
     </>
   );
 };

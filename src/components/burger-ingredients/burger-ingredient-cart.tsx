@@ -1,7 +1,6 @@
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 import { getIngredientCount } from '@components/burger-ingredients/get-ingredient-count.tsx';
 import { ItemTypes } from '@utils/types.ts';
@@ -24,9 +23,6 @@ const BurgerIngredientCart = ({
     (state: RootState) => state.ingredients.constructorIngredients
   );
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const [{ isDragging }, dragRef] = useDrag({
     type: ItemTypes.INGREDIENT,
     item: { ...ingredient },
@@ -42,9 +38,6 @@ const BurgerIngredientCart = ({
   const count = getIngredientCount(constructorIngredients, ingredient._id);
 
   const handleClick = (): void => {
-    void navigate(`/ingredients/${ingredient._id}`, {
-      state: { backgroundLocation: location },
-    });
     onClick?.(ingredient);
   };
 

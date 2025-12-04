@@ -7,7 +7,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { AppHeader } from '@components/app-header/app-header.tsx';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor.tsx';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients.tsx';
-import { IngredientDetails } from '@components/burger-ingredients/details/ingredient-details.tsx';
 import { OrderDetails } from '@components/burger-ingredients/details/order-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 import { createOrder, fetchIngredients } from '@services/api.ts';
@@ -28,8 +27,9 @@ export const BurgerConstructorPage = (): React.JSX.Element => {
   const state = location.state as LocationState;
   const background = state?.background;
 
-  const { allIngredients, currentIngredient, createdOrder, constructorIngredients } =
-    useSelector((state: RootState) => state.ingredients);
+  const { allIngredients, createdOrder, constructorIngredients } = useSelector(
+    (state: RootState) => state.ingredients
+  );
 
   useEffect(() => {
     void dispatch(fetchIngredients());
@@ -77,12 +77,6 @@ export const BurgerConstructorPage = (): React.JSX.Element => {
             />
           </main>
         </div>
-
-        {currentIngredient && background && (
-          <Modal onClose={handleCloseModal} header="Детали ингредиента">
-            <IngredientDetails ingredient={currentIngredient} />
-          </Modal>
-        )}
 
         {createdOrder && (
           <Modal onClose={handleCloseModal}>
