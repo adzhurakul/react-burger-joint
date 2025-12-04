@@ -19,8 +19,6 @@ const BurgerIngredientCart = ({
   ingredient,
   onClick,
 }: TBurgerIngredientCartProps): React.JSX.Element => {
-  console.log(ingredient);
-
   const constructorIngredients = useSelector(
     (state: RootState) => state.ingredients.constructorIngredients
   );
@@ -39,11 +37,15 @@ const BurgerIngredientCart = ({
 
   const count = getIngredientCount(constructorIngredients, ingredient._id);
 
+  const handleClick = (): void => {
+    onClick?.(ingredient);
+  };
+
   return (
     <div
       ref={refCallback}
       className={`${styles.cart_item} ${isDragging ? styles.dragging : ''}`}
-      onClick={() => onClick?.(ingredient)}
+      onClick={handleClick}
     >
       <img className={styles.cart_image} src={ingredient.image} alt={ingredient.name} />
 
@@ -52,7 +54,7 @@ const BurgerIngredientCart = ({
         <CurrencyIcon type="primary" />
       </div>
 
-      <p className={`${styles.name}text text_type_main-default`}>{ingredient.name}</p>
+      <p className={`${styles.name} text text_type_main-default`}>{ingredient.name}</p>
       {count > 0 && (
         <div className={styles.counter}>
           <Counter count={count} size="default" />

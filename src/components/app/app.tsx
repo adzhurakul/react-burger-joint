@@ -1,75 +1,80 @@
 import {
-  createOrder,
-  fetchIngredients,
-  setCreatedOrder,
-  setCurrentIngredient,
-} from '@/services/ingredients-slice.ts';
-import { useEffect } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useSelector, useDispatch } from 'react-redux';
+  BurgerConstructorPage,
+  ForgotPasswordPage,
+  IngredientPage,
+  LoginPage,
+  OrdersPage,
+  ProfilePage,
+  RegisterPage,
+  ResetPasswordPage,
+} from '@/pages';
+import { useSelector } from 'react-redux';
+import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { AppHeader } from '@components/app-header/app-header';
-import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
-import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
 import { IngredientDetails } from '@components/burger-ingredients/details/ingredient-details.tsx';
-import { OrderDetails } from '@components/burger-ingredients/details/order-details.tsx';
+import { GuestRouteElement } from '@components/guest-route.tsx';
 import { Modal } from '@components/modal/modal.tsx';
+import { ProtectedRouteElement } from '@components/protected-route.tsx';
+import { ResetPasswordRouteElement } from '@components/reset-password-route.tsx';
 
-import type { RootState, AppDispatch } from '@/services/store.ts';
+import type { RootState } from '@services/store.ts';
+import type { LocationState } from '@utils/types.ts';
 import type React from 'react';
 
-import styles from './app.module.css';
+const IngredientModalWrapper = (): React.JSX.Element | null => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  const { allIngredients } = useSelector((state: RootState) => state.ingredients);
+
+  const ingredient = allIngredients.find((item) => item._id === id);
+
+  if (!ingredient) return null;
+
+  return (
+    <Modal onClose={() => void navigate(-1)} header="Детали ингредиента">
+      <IngredientDetails ingredient={ingredient} />
+    </Modal>
+  );
+};
 
 export const App = (): React.JSX.Element => {
-  const useAppDispatch = (): AppDispatch => useDispatch<AppDispatch>();
-  const dispatch: AppDispatch = useAppDispatch();
-  const { allIngredients, currentIngredient, createdOrder, constructorIngredients } =
-    useSelector((state: RootState) => state.ingredients);
-
-  const handleCloseModal = (): void => {
-    dispatch(setCurrentIngredient(null));
-    dispatch(setCreatedOrder(null));
-  };
-
-  useEffect(() => {
-    void dispatch(fetchIngredients());
-  }, [dispatch]);
+  const location = useLocation();
+  const state = location.state as LocationState;
+  const background = state?.background;
 
   return (
     <>
-      <DndProvider backend={HTML5Backend}>
-        <div className={styles.app}>
-          <AppHeader />
-          <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
-            Соберите бургер
-          </h1>
-          <main className={`${styles.main} pl-5 pr-5`}>
-            <BurgerIngredients
-              onIngredientClick={(ingredient) =>
-                dispatch(setCurrentIngredient(ingredient))
-              }
-              ingredients={allIngredients ?? []}
-            />
-            <BurgerConstructor
-              onOrderClick={() => {
-                const ingredientIds = constructorIngredients.map((ing) => ing._id);
-                void dispatch(createOrder(ingredientIds));
-              }}
-            />
-          </main>
-        </div>
-        {currentIngredient != null && (
-          <Modal onClose={handleCloseModal} header="Детали ингредиента">
-            <IngredientDetails ingredient={currentIngredient} />
-          </Modal>
-        )}
-        {createdOrder != null && (
-          <Modal onClose={handleCloseModal}>
-            <OrderDetails orderNumber={createdOrder.id} />
-          </Modal>
-        )}
-      </DndProvider>
+      {background && (
+        <Routes>
+          <Route path="/ingredients/:id" element={<IngredientModalWrapper />} />
+        </Routes>
+      )}
+
+      <Routes location={background ?? location}>
+        <Route path="/" element={<BurgerConstructorPage />} />
+        <Route path="/login" element={<GuestRouteElement element={<LoginPage />} />} />
+        <Route
+          path="/register"
+          element={<GuestRouteElement element={<RegisterPage />} />}
+        />
+        <Route
+          path="/forgot-password"
+          element={<GuestRouteElement element={<ForgotPasswordPage />} />}
+        />
+        <Route
+          path="/reset-password"
+          element={<ResetPasswordRouteElement element={<ResetPasswordPage />} />}
+        />
+
+        <Route
+          path="/profile"
+          element={<ProtectedRouteElement element={<ProfilePage />} />}
+        >
+          <Route path="orders" element={<OrdersPage />} />
+        </Route>
+        <Route path="/ingredients/:id" element={<IngredientPage />} />
+      </Routes>
     </>
   );
 };
