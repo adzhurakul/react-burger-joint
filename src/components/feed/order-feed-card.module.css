@@ -1,0 +1,16 @@
+.card {
+  padding: 24px;
+  background: #1c1c21;
+  border-radius: 40px;
+  cursor: pointer;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ingredients {
+  height: 48px;
+  margin-top: 24px;
+}
