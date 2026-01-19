@@ -7,6 +7,8 @@ import {
   ProfilePage,
   RegisterPage,
   ResetPasswordPage,
+  OrderDetailsPage,
+  FeedPage,
 } from '@/pages';
 import { useSelector } from 'react-redux';
 import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -38,6 +40,20 @@ const IngredientModalWrapper = (): React.JSX.Element | null => {
   );
 };
 
+const FeedOrderModalWrapper = (): React.JSX.Element | null => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  // позже тут будет селектор заказа по id
+  if (!id) return null;
+
+  return (
+    <Modal onClose={() => void navigate(-1)} header="Детали заказа">
+      <OrderDetailsPage />
+    </Modal>
+  );
+};
+
 export const App = (): React.JSX.Element => {
   const location = useLocation();
   const state = location.state as LocationState;
@@ -48,6 +64,7 @@ export const App = (): React.JSX.Element => {
       {background && (
         <Routes>
           <Route path="/ingredients/:id" element={<IngredientModalWrapper />} />
+          <Route path="/feed/:id" element={<FeedOrderModalWrapper />} />
         </Routes>
       )}
 
@@ -74,6 +91,9 @@ export const App = (): React.JSX.Element => {
           <Route path="orders" element={<OrdersPage />} />
         </Route>
         <Route path="/ingredients/:id" element={<IngredientPage />} />
+
+        <Route path="/feed" element={<FeedPage />} />
+        <Route path="/feed/:id" element={<OrderDetailsPage />} />
       </Routes>
     </>
   );

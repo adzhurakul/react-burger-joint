@@ -84,7 +84,7 @@ export function getLocal<T>(name: string): T | undefined {
   }
 }
 
-export const authSlice = createSlice({
+const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
@@ -213,4 +213,8 @@ export const authSlice = createSlice({
 });
 
 export const { clearAuthState } = authSlice.actions;
-export default authSlice.reducer;
+export default authSlice;
+
+export type TAuthInternalActions = ReturnType<
+  (typeof authSlice.actions)[keyof typeof authSlice.actions]
+>;
