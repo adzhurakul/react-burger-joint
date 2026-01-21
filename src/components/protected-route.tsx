@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
 import { ACCESS_TOKEN_NAME } from '@utils/types.ts';
 
 import { getUser } from '../services/api';
 import { getLocal } from '../services/auth-slice';
+import { useDispatch, useSelector } from '../services/store';
 
-import type { RootState, AppDispatch } from '../services/store';
 import type React from 'react';
 import type { ReactElement } from 'react';
 
@@ -18,8 +17,8 @@ type ProtectedRouteProps = {
 export const ProtectedRouteElement = ({
   element,
 }: ProtectedRouteProps): React.JSX.Element => {
-  const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
   const [isUserLoaded, setUserLoaded] = useState(false);
 
   useEffect(() => {

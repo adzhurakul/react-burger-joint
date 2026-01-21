@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
@@ -12,23 +11,23 @@ import { Modal } from '@components/modal/modal.tsx';
 import { createOrder, fetchIngredients } from '@services/api.ts';
 import { getLocal } from '@services/auth-slice.ts';
 import { setCreatedOrder, setCurrentIngredient } from '@services/ingredients-slice.ts';
+import { useDispatch, useSelector } from '@services/store.ts';
 import { ACCESS_TOKEN_NAME } from '@utils/types.ts';
 
-import type { AppDispatch, RootState } from '@services/store.ts';
 import type { LocationState } from '@utils/types.ts';
 import type React from 'react';
 
 import styles from './all-pages.module.css';
 
 export const BurgerConstructorPage = (): React.JSX.Element => {
-  const dispatch: AppDispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState;
   const background = state?.background;
 
   const { allIngredients, createdOrder, constructorIngredients } = useSelector(
-    (state: RootState) => state.ingredients
+    (state) => state.ingredients
   );
 
   useEffect(() => {

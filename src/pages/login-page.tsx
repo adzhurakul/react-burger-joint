@@ -1,19 +1,17 @@
 import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
 
 import { loginUser } from '../services/api';
-
-import type { AppDispatch } from '../services/store';
+import { useDispatch } from '../services/store';
 
 import styles from './all-pages.module.css';
 
 export const LoginPage = (): React.JSX.Element => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -12,7 +12,6 @@ import {
   OrderPage,
 } from '@/pages';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { IngredientDetails } from '@components/burger-ingredients/details/ingredient-details.tsx';
@@ -21,8 +20,9 @@ import { Modal } from '@components/modal/modal.tsx';
 import { ProtectedRouteElement } from '@components/protected-route.tsx';
 import { ResetPasswordRouteElement } from '@components/reset-password-route.tsx';
 import { fetchOrder } from '@services/api.ts';
+import { useDispatch, useSelector } from '@services/store.ts';
 
-import type { AppDispatch, RootState } from '@services/store.ts';
+import type { RootState } from '@services/store.ts';
 import type { LocationState } from '@utils/types.ts';
 import type React from 'react';
 
@@ -46,9 +46,8 @@ const IngredientModalWrapper = (): React.JSX.Element | null => {
 const OrderDetailsModalWrapper = (): React.JSX.Element | null => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const currentOrder = useSelector((state: RootState) => state.feed.currentOrder);
+  const dispatch = useDispatch();
+  const currentOrder = useSelector((state) => state.feed.currentOrder);
 
   useEffect(() => {
     if (!currentOrder) {

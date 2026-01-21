@@ -1,20 +1,18 @@
 import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
 
 import { registerUser } from '../services/api';
-
-import type { AppDispatch, RootState } from '../services/store';
+import { useDispatch, useSelector } from '../services/store';
 
 import styles from './all-pages.module.css';
 
 export const RegisterPage = (): React.JSX.Element => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-  const authState = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+  const authState = useSelector((state) => state.auth);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

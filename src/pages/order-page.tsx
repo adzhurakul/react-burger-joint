@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
 import { OrderDetails } from '@pages/order-details.tsx';
 import { fetchOrder } from '@services/api.ts';
+import { useDispatch } from '@services/store.ts';
 
-import type { AppDispatch } from '@services/store.ts';
 import type { TWSOrder } from '@utils/types.ts';
 import type { JSX } from 'react';
 
@@ -16,7 +15,7 @@ type OrderPageProps = {
 
 export const OrderPage = ({ showHeader }: OrderPageProps): JSX.Element => {
   const { id } = useParams<{ id: string }>();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const [orderData, setOrderData] = useState<TWSOrder | null>(null);
 

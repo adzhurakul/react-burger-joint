@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,8 +8,8 @@ import { OrderFeedSummary } from '@components/feed/order-feed-summary.tsx';
 import { OrderNotFound } from '@components/feed/order-not-found.tsx';
 import { WS_ORDERS_URL } from '@services/api.ts';
 import { wsConnect, wsDisconnect } from '@services/feed-slice.ts';
+import { useDispatch, useSelector } from '@services/store.ts';
 
-import type { AppDispatch, RootState } from '@services/store.ts';
 import type { TWSOrder } from '@utils/types.ts';
 import type React from 'react';
 
@@ -18,8 +17,8 @@ import styles from './all-pages.module.css';
 import feedStyles from './feed-page.module.css';
 
 export const FeedPage = (): React.JSX.Element => {
-  const dispatch = useDispatch<AppDispatch>();
-  const orders: TWSOrder[] = useSelector((state: RootState) => state.feed.orders);
+  const dispatch = useDispatch();
+  const orders: TWSOrder[] = useSelector((state) => state.feed.orders);
   const [loading] = useState<boolean>(Boolean);
 
   const lastPart = location.pathname.split('/').pop();

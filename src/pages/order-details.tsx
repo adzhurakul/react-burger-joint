@@ -1,12 +1,11 @@
 import { CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import { fetchIngredients } from '@services/api.ts';
+import { useDispatch } from '@services/store.ts';
 
-import type { AppDispatch } from '@services/store.ts';
 import type { TIngredient, TWSOrder } from '@utils/types.ts';
 
 import styles from './order-details-page.module.css';
@@ -20,7 +19,7 @@ export const OrderDetails = ({
   isModal,
   orderData,
 }: OrderDetailsProps): React.JSX.Element => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const [allIngredients, setAllIngredients] = useState<TIngredient[] | null>(null);
 
   useEffect(() => {
