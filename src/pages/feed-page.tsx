@@ -21,9 +21,6 @@ export const FeedPage = (): React.JSX.Element => {
   const orders: TWSOrder[] = useSelector((state) => state.feed.orders);
   const [loading] = useState<boolean>(Boolean);
 
-  const lastPart = location.pathname.split('/').pop();
-  const isOrderActive = Number.isInteger(Number(lastPart));
-
   useEffect(() => {
     dispatch(wsConnect(WS_ORDERS_URL));
 
@@ -36,27 +33,25 @@ export const FeedPage = (): React.JSX.Element => {
     <>
       <AppHeader />
       <section className={styles.container}>
-        {!isOrderActive && (
-          <>
-            <h1 className="text text_type_main-large mb-5 mt-10">Лента заказов</h1>
+        <>
+          <h1 className="text text_type_main-large mb-5 mt-10">Лента заказов</h1>
 
-            <div className={feedStyles.wrapper}>
-              <div className={`${feedStyles.w_100} ${feedStyles.scrollable}`}>
-                {!loading ? (
-                  orders.map((order) => (
-                    <OrderFeedCard key={uuidv4()} order={order} showStatus={false} />
-                  ))
-                ) : (
-                  <OrderNotFound />
-                )}
-              </div>
-
-              <div className={feedStyles.w_100}>
-                <OrderFeedSummary loading />
-              </div>
+          <div className={feedStyles.wrapper}>
+            <div className={`${feedStyles.w_100} ${feedStyles.scrollable}`}>
+              {!loading ? (
+                orders.map((order) => (
+                  <OrderFeedCard key={uuidv4()} order={order} showStatus={false} />
+                ))
+              ) : (
+                <OrderNotFound />
+              )}
             </div>
-          </>
-        )}
+
+            <div className={feedStyles.w_100}>
+              <OrderFeedSummary loading />
+            </div>
+          </div>
+        </>
 
         <Outlet />
       </section>
