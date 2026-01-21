@@ -3,14 +3,16 @@ import {
   ForgotPasswordPage,
   IngredientPage,
   LoginPage,
-  OrdersPage,
+  ProfileOrdersPage,
   ProfilePage,
   RegisterPage,
   ResetPasswordPage,
-  OrderDetailsPage,
+  OrderDetails,
   FeedPage,
+  OrderPage,
 } from '@/pages';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { IngredientDetails } from '@components/burger-ingredients/details/ingredient-details.tsx';
@@ -18,8 +20,9 @@ import { GuestRouteElement } from '@components/guest-route.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 import { ProtectedRouteElement } from '@components/protected-route.tsx';
 import { ResetPasswordRouteElement } from '@components/reset-password-route.tsx';
+import { fetchOrder } from '@services/api.ts';
 
-import type { RootState } from '@services/store.ts';
+import type { AppDispatch, RootState } from '@services/store.ts';
 import type { LocationState } from '@utils/types.ts';
 import type React from 'react';
 
@@ -40,16 +43,25 @@ const IngredientModalWrapper = (): React.JSX.Element | null => {
   );
 };
 
-const FeedOrderModalWrapper = (): React.JSX.Element | null => {
+const OrderDetailsModalWrapper = (): React.JSX.Element | null => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const currentOrder = useSelector((state: RootState) => state.feed.currentOrder);
+
+  useEffect(() => {
+    if (!currentOrder) {
+      void dispatch(fetchOrder(id ?? ''));
+    }
+  }, [currentOrder, dispatch]);
 
   // позже тут будет селектор заказа по id
-  if (!id) return null;
+  if (!id || !currentOrder) return null;
 
   return (
     <Modal onClose={() => void navigate(-1)} header="Детали заказа">
-      <OrderDetailsPage />
+      <OrderDetails isModal={true} orderData={currentOrder} />
     </Modal>
   );
 };
@@ -64,7 +76,11 @@ export const App = (): React.JSX.Element => {
       {background && (
         <Routes>
           <Route path="/ingredients/:id" element={<IngredientModalWrapper />} />
-          <Route path="/feed/:id" element={<FeedOrderModalWrapper />} />
+          <Route path="/feed/:id" element={<OrderDetailsModalWrapper />} />
+          <Route
+            path="profile/orders/:id"
+            element={<ProtectedRouteElement element={<OrderDetailsModalWrapper />} />}
+          />
         </Routes>
       )}
 
@@ -88,12 +104,13 @@ export const App = (): React.JSX.Element => {
           path="/profile"
           element={<ProtectedRouteElement element={<ProfilePage />} />}
         >
-          <Route path="orders" element={<OrdersPage />} />
+          <Route path="orders" element={<ProfileOrdersPage />} />
+          <Route path="orders/:id" element={<OrderPage showHeader={false} />} />
         </Route>
         <Route path="/ingredients/:id" element={<IngredientPage />} />
 
         <Route path="/feed" element={<FeedPage />} />
-        <Route path="/feed/:id" element={<OrderDetailsPage />} />
+        <Route path="/feed/:id" element={<OrderPage showHeader={true} />} />
       </Routes>
     </>
   );

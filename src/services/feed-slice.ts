@@ -1,5 +1,6 @@
 import { createAction, createSlice } from '@reduxjs/toolkit';
 
+import { fetchOrder } from '@services/api.ts';
 import { type IWSOrdersPayload, type TWSOrder, WebsocketStatus } from '@utils/types.ts';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -14,16 +15,22 @@ type FeedState = {
   status: WebsocketStatus;
   connectionError: string | null;
   orders: TWSOrder[];
+  currentOrder: TWSOrder | null;
   total: number;
   totalToday: number;
+  loading: boolean;
+  error: string | null;
 };
 
 const initialState: FeedState = {
   status: WebsocketStatus.OFFLINE,
   connectionError: null,
   orders: [],
+  currentOrder: null,
   total: 0,
   totalToday: 0,
+  loading: false,
+  error: null,
 };
 
 export const feedSlice = createSlice({
@@ -48,10 +55,29 @@ export const feedSlice = createSlice({
       state.total = action.payload.total;
       state.totalToday = action.payload.totalToday;
     },
+    setCurrentOrder: (state, action: PayloadAction<TWSOrder | null>) => {
+      state.currentOrder = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchOrder.fulfilled, (state, action) => {
+        state.currentOrder = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? 'Неизвестная ошибка';
+      });
   },
 });
 
-export const { wsConnecting, wsOpen, wsClose, wsError, wsMessage } = feedSlice.actions;
+export const { wsConnecting, wsOpen, wsClose, wsError, wsMessage, setCurrentOrder } =
+  feedSlice.actions;
 
 export type TWsInternalActions = ReturnType<
   (typeof feedSlice.actions)[keyof typeof feedSlice.actions]

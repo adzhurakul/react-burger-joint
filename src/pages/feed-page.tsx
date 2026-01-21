@@ -1,11 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Outlet } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
-import { AppHeader } from '@components/app-header/app-header';
-import { OrderFeedCard } from '@components/feed/order-feed-card';
-import { wsConnect } from '@services/feed-slice.ts';
+import { AppHeader } from '@components/app-header/app-header.tsx';
+import { OrderFeedCard } from '@components/feed/order-feed-card.tsx';
+import { OrderFeedSummary } from '@components/feed/order-feed-summary.tsx';
+import { OrderNotFound } from '@components/feed/order-not-found.tsx';
+import { WS_ORDERS_URL } from '@services/api.ts';
+import { wsConnect, wsDisconnect } from '@services/feed-slice.ts';
 
-import type { RootState, AppDispatch } from '@services/store.ts';
+import type { AppDispatch, RootState } from '@services/store.ts';
 import type { TWSOrder } from '@utils/types.ts';
 import type React from 'react';
 
@@ -14,75 +19,48 @@ import feedStyles from './feed-page.module.css';
 
 export const FeedPage = (): React.JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
-
-  // Получаем state из wsSlice
   const orders: TWSOrder[] = useSelector((state: RootState) => state.feed.orders);
-  const total: number = useSelector((state: RootState) => state.feed.total);
-  const totalToday: number = useSelector((state: RootState) => state.feed.totalToday);
+  const [loading] = useState<boolean>(Boolean);
 
-  // Открываем WS при монтировании
+  const lastPart = location.pathname.split('/').pop();
+  const isOrderActive = Number.isInteger(Number(lastPart));
+
   useEffect(() => {
-    dispatch(wsConnect('wss://norma.education-services.ru/orders/all'));
+    dispatch(wsConnect(WS_ORDERS_URL));
 
     return (): void => {
-      //dispatch(wsSlice.actions.connectionClosed()); todo
+      dispatch(wsDisconnect());
     };
   }, [dispatch]);
 
-  // Разделяем заказы по статусу
-  const readyOrders = orders.filter((order) => order.status === 'done');
-  const workOrders = orders.filter((order) => order.status !== 'done');
-
   return (
-    <div className={styles.app}>
+    <>
       <AppHeader />
-      <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
-        Лента заказов
-      </h1>
+      <section className={styles.container}>
+        {!isOrderActive && (
+          <>
+            <h1 className="text text_type_main-large mb-5 mt-10">Лента заказов</h1>
 
-      <main className={styles.main}>
-        <div className={styles.main}>
-          {/* Левая колонка — лента */}
-          <section className={feedStyles.feed}>
-            {orders.map((order) => (
-              <OrderFeedCard key={order._id} order={order} />
-            ))}
-          </section>
-
-          {/* Правая колонка — статистика */}
-          <aside className={feedStyles.stats}>
-            <div className={feedStyles.statusBlock}>
-              <div>
-                <p className="text text_type_main-medium mb-2">Готовы:</p>
-                <ul className={feedStyles.readyList}>
-                  {readyOrders.map((order) => (
-                    <li key={order._id} className="text text_type_digits-default">
-                      {order.number}
-                    </li>
-                  ))}
-                </ul>
+            <div className={feedStyles.wrapper}>
+              <div className={`${feedStyles.w_100} ${feedStyles.scrollable}`}>
+                {!loading ? (
+                  orders.map((order) => (
+                    <OrderFeedCard key={uuidv4()} order={order} showStatus={false} />
+                  ))
+                ) : (
+                  <OrderNotFound />
+                )}
               </div>
 
-              <div>
-                <p className="text text_type_main-medium mb-2">В работе:</p>
-                <ul className={feedStyles.workList}>
-                  {workOrders.map((order) => (
-                    <li key={order._id} className="text text_type_digits-default">
-                      {order.number}
-                    </li>
-                  ))}
-                </ul>
+              <div className={feedStyles.w_100}>
+                <OrderFeedSummary loading />
               </div>
             </div>
+          </>
+        )}
 
-            <p className="text text_type_main-medium mt-10">Выполнено за всё время:</p>
-            <p className="text text_type_digits-large">{total || 0}</p>
-
-            <p className="text text_type_main-medium mt-10">Выполнено за сегодня:</p>
-            <p className="text text_type_digits-large">{totalToday || 0}</p>
-          </aside>
-        </div>
-      </main>
-    </div>
+        <Outlet />
+      </section>
+    </>
   );
 };

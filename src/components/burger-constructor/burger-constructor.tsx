@@ -14,7 +14,7 @@ import { ItemTypes } from '@utils/types';
 
 import { BurgerConstructorItem } from './burger-constructor-item';
 
-import type { RootState } from '@/services/store.ts';
+import type { AppDispatch, RootState } from '@/services/store.ts';
 import type { TIngredient } from '@utils/types';
 import type { JSX } from 'react';
 
@@ -27,7 +27,7 @@ type TBurgerConstructorProps = {
 export const BurgerConstructor = ({
   onOrderClick,
 }: TBurgerConstructorProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch<AppDispatch>();
   const constructorIngredients = useSelector(
     (state: RootState) => state.ingredients.constructorIngredients
   );

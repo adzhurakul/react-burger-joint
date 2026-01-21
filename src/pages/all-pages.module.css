@@ -22,17 +22,6 @@
   overflow: hidden;
 }
 
-main {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 40px;
-  width: 100%;
-  max-width: 1240px;
-  margin: 0 auto;
-}
-
 .profile_text {
   display: block;
   text-decoration: none;
@@ -40,6 +29,7 @@ main {
 
 .container {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;

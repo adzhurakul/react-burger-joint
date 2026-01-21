@@ -18,7 +18,7 @@ export const ProfilePage = (): React.JSX.Element => {
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const isProfileActive = location.pathname === '/profile';
-  const isOrdersActive = location.pathname.endsWith('/orders');
+  const isOrdersActive = location.pathname.includes('/orders');
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

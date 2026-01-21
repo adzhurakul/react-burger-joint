@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 
 import { ItemTypes } from '@utils/types';
 
+import type { AppDispatch } from '@services/store.ts';
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-constructor-item.module.css';
@@ -25,7 +26,7 @@ export const BurgerConstructorItem = ({
   ingredient,
   index,
 }: BurgerConstructorItemProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch<AppDispatch>();
   const ref = useRef<HTMLLIElement>(null);
 
   const [, drop] = useDrop({
