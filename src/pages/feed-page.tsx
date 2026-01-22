@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from '@services/store.ts';
 import type { TWSOrder } from '@utils/types.ts';
 import type React from 'react';
 
-import styles from './all-pages.module.css';
 import feedStyles from './feed-page.module.css';
 
 export const FeedPage = (): React.JSX.Element => {
@@ -32,7 +31,7 @@ export const FeedPage = (): React.JSX.Element => {
   return (
     <>
       <AppHeader />
-      <section className={styles.container}>
+      <section className={feedStyles.main}>
         <>
           <h1 className="text text_type_main-large mb-5 mt-10">Лента заказов</h1>
 
