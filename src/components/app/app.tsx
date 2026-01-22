@@ -22,7 +22,6 @@ import { ResetPasswordRouteElement } from '@components/reset-password-route.tsx'
 import { fetchOrder } from '@services/api.ts';
 import { useDispatch, useSelector } from '@services/store.ts';
 
-import type { RootState } from '@services/store.ts';
 import type { LocationState } from '@utils/types.ts';
 import type React from 'react';
 
@@ -30,7 +29,7 @@ const IngredientModalWrapper = (): React.JSX.Element | null => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { allIngredients } = useSelector((state: RootState) => state.ingredients);
+  const { allIngredients } = useSelector((state) => state.ingredients);
 
   const ingredient = allIngredients.find((item) => item._id === id);
 

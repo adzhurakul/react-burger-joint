@@ -1,11 +1,10 @@
+import { useSelector } from '@/services/store.ts';
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useDrag } from 'react-dnd';
-import { useSelector } from 'react-redux';
 
 import { getIngredientCount } from '@components/burger-ingredients/get-ingredient-count.tsx';
 import { ItemTypes } from '@utils/types.ts';
 
-import type { RootState } from '@/services/store.ts';
 import type { TIngredient } from '@utils/types.ts';
 
 import styles from './burger-ingredient-cart.module.css';
@@ -20,7 +19,7 @@ const BurgerIngredientCart = ({
   onClick,
 }: TBurgerIngredientCartProps): React.JSX.Element => {
   const constructorIngredients = useSelector(
-    (state: RootState) => state.ingredients.constructorIngredients
+    (state) => state.ingredients.constructorIngredients
   );
 
   const [{ isDragging }, dragRef] = useDrag({

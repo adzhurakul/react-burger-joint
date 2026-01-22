@@ -1,6 +1,5 @@
-import { useSelector } from 'react-redux';
+import { useSelector } from '@services/store.ts';
 
-import type { RootState } from '@services/store.ts';
 import type { TWSOrder } from '@utils/types.ts';
 
 import styles from './order-feed-summary.module.css';
@@ -10,9 +9,9 @@ type OrderFeedSummaryProps = {
 };
 
 export const OrderFeedSummary = (props: OrderFeedSummaryProps): React.JSX.Element => {
-  const orders = useSelector((state: RootState) => state.feed.orders);
-  const total = useSelector((state: RootState) => state.feed.total);
-  const totalToday = useSelector((state: RootState) => state.feed.totalToday);
+  const orders = useSelector((state) => state.feed.orders);
+  const total = useSelector((state) => state.feed.total);
+  const totalToday = useSelector((state) => state.feed.totalToday);
   const pendingOrders = orders.filter((order: TWSOrder) => order.status === 'pending');
 
   return (

@@ -1,7 +1,6 @@
-import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
-import type { RootState } from '@services/store.ts';
+import { useSelector } from '@services/store.ts';
 
 type ResetPasswordRouteProps = {
   element: React.JSX.Element;
@@ -10,7 +9,7 @@ type ResetPasswordRouteProps = {
 export const ResetPasswordRouteElement = ({
   element,
 }: ResetPasswordRouteProps): React.JSX.Element => {
-  const canReset = useSelector((state: RootState) => state.auth.canResetPassword);
+  const canReset = useSelector((state) => state.auth.canResetPassword);
 
   return canReset ? element : <Navigate to="/forgot-password" replace />;
 };

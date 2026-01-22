@@ -1,11 +1,10 @@
 import { CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 
 import { setCurrentOrder } from '@services/feed-slice.ts';
+import { useSelector } from '@services/store.ts';
 
-import type { RootState } from '@services/store.ts';
 import type { TIngredient, TWSOrder } from '@utils/types.ts';
 
 import styles from './order-feed-card.module.css';
@@ -17,7 +16,7 @@ export const OrderFeedCard = ({
   order: TWSOrder;
   showStatus: boolean;
 }): React.JSX.Element => {
-  const { allIngredients } = useSelector((state: RootState) => state.ingredients);
+  const { allIngredients } = useSelector((state) => state.ingredients);
 
   const [data, setData] = useState<TIngredient[]>([]);
   const location = useLocation();
