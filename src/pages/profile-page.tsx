@@ -1,6 +1,5 @@
 import { Button, EmailInput } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
@@ -8,17 +7,16 @@ import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from '@utils/types.ts';
 
 import { logoutUser, getUser, updateUser } from '../services/api';
 import { getLocal } from '../services/auth-slice';
-
-import type { AppDispatch } from '../services/store';
+import { useDispatch } from '../services/store';
 
 import styles from './all-pages.module.css';
 
 export const ProfilePage = (): React.JSX.Element => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const location = useLocation();
   const isProfileActive = location.pathname === '/profile';
-  const isOrdersActive = location.pathname.endsWith('/orders');
+  const isOrdersActive = location.pathname.includes('/orders');
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

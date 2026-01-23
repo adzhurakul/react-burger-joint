@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+}
+
+.w_100 {
+  width: 100%;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 1240px;
+  height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.scrollable {
+  max-height: 85vh;
+  padding-right: 8px;
+  overflow: auto;
+  scrollbar-color: #8685ad #2f2f37;
+}

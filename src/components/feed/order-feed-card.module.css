@@ -1,0 +1,78 @@
+.order_card {
+  margin-top: calc(4 * 4px);
+  padding: calc(6 * 4px);
+  background: #1c1c21;
+  border-radius: 40px;
+  transition: 0.5s;
+}
+
+.card_item {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+}
+
+.order_item {
+  transition: 0.5s;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex_content_between {
+  justify-content: space-between;
+}
+
+.flex_align_center {
+  align-items: center;
+}
+
+.remaining_ingredients {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  color: white;
+  font-size: 16px;
+  background-color: rgb(0 0 0 / 50%);
+  border-radius: 100%;
+}
+
+.ingredient_list {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 0 0 20px;
+  list-style-type: none;
+}
+
+.ingredient_list li {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin-left: -20px;
+  background-color: #131316;
+  border: 3px solid #7920bd;
+  border-radius: 100%;
+}
+
+.ingredient_list img {
+  position: absolute;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%);
+  object-fit: cover;
+}
+
+.link {
+  color: inherit;
+}

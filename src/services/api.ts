@@ -14,6 +14,7 @@ import type {
   SuccessMessageResponse,
   TIngredient,
   TokenRefreshResponse,
+  TWSOrder,
 } from '@utils/types.ts';
 
 const BASE_URL = 'https://norma.education-services.ru/api';
@@ -28,6 +29,8 @@ const LOGIN_URL = `${BASE_URL}/auth/login`;
 const LOGOUT_URL = `${BASE_URL}/auth/logout`;
 const REFRESH_TOKEN_URL = `${BASE_URL}/auth/token`;
 const USER_URL = `${BASE_URL}/auth/user`;
+
+export const WS_ORDERS_URL = 'wss://norma.education-services.ru/orders/all';
 
 async function checkResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
@@ -241,3 +244,28 @@ export const createOrder = createAsyncThunk<
     return rejectWithValue('Неизвестная ошибка');
   }
 });
+
+export const fetchOrder = createAsyncThunk<TWSOrder, string, { rejectValue: string }>(
+  'orders/fetchOrder',
+  async (orderID, { rejectWithValue }) => {
+    try {
+      const json = await fetchWithRefresh<{
+        success: boolean;
+        orders: TWSOrder[];
+      }>(`${ORDER_URL}/${orderID}`, {
+        method: 'GET',
+      });
+
+      const order = json.orders[0];
+
+      if (!order) {
+        return rejectWithValue('Заказ не найден');
+      }
+
+      return order;
+    } catch (err: unknown) {
+      if (err instanceof Error) return rejectWithValue(err.message);
+      return rejectWithValue('Неизвестная ошибка');
+    }
+  }
+);

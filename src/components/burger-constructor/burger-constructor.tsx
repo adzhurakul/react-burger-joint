@@ -2,19 +2,19 @@ import {
   addIngredientToConstructor,
   removeIngredientFromConstructorById,
 } from '@/services/ingredients-slice';
+import { useDispatch, useSelector } from '@/services/store.ts';
 import {
   Button,
   ConstructorElement,
   CurrencyIcon,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useDrop } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { ItemTypes } from '@utils/types';
 
 import { BurgerConstructorItem } from './burger-constructor-item';
 
-import type { RootState } from '@/services/store.ts';
+import type { AppDispatch } from '@/services/store.ts';
 import type { TIngredient } from '@utils/types';
 import type { JSX } from 'react';
 
@@ -27,9 +27,9 @@ type TBurgerConstructorProps = {
 export const BurgerConstructor = ({
   onOrderClick,
 }: TBurgerConstructorProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const constructorIngredients = useSelector(
-    (state: RootState) => state.ingredients.constructorIngredients
+    (state) => state.ingredients.constructorIngredients
   );
 
   const [, dropRef] = useDrop({

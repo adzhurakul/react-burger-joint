@@ -1,0 +1,24 @@
+.flex {
+  display: flex;
+}
+
+.w_50 {
+  width: 50%;
+}
+
+.order_list {
+  display: flex;
+  flex: 0 0 100%;
+  flex-flow: row wrap;
+  max-width: 100%;
+}
+
+.order_item {
+  flex: 0 0 50%;
+  max-width: 50%;
+  color: #0cc;
+}
+
+.color_white {
+  color: #fff;
+}

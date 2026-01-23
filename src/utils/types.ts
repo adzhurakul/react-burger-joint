@@ -85,3 +85,35 @@ export type LocationState = {
 };
 export const REFRESH_TOKEN_NAME = 'refreshToken';
 export const ACCESS_TOKEN_NAME = 'accessToken';
+
+export type TWSOrder = {
+  ingredients: string[];
+  name: string;
+  _id: string;
+  status: string;
+  number: number;
+  createdAt?: string;
+  updatedAt: string;
+};
+
+export type IWSActions = {
+  wsInit: string;
+  onOpen: string;
+  onClose: string;
+  onError: string;
+  onMessage: string;
+};
+
+export type IWSOrdersPayload = {
+  success?: boolean;
+  message?: string;
+  orders: TWSOrder[];
+  total: number;
+  totalToday: number;
+};
+
+export enum WebsocketStatus {
+  CONNECTING = 'CONNECTING...',
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
+}

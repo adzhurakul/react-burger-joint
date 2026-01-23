@@ -125,4 +125,8 @@ export const {
   reorderConstructorIngredients,
 } = ingredientsSlice.actions;
 
-export default ingredientsSlice.reducer;
+export default ingredientsSlice;
+
+export type TIngredientsInternalActions = ReturnType<
+  (typeof ingredientsSlice.actions)[keyof typeof ingredientsSlice.actions]
+>;

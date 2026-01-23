@@ -1,20 +1,19 @@
 import { Button, Input } from '@krgaa/react-developer-burger-ui-components';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { AppHeader } from '@components/app-header/app-header.tsx';
+import { useDispatch } from '@services/store.ts';
 
 import { resetPassword } from '../services/api';
 
-import type { AppDispatch } from '@services/store.ts';
 import type React from 'react';
 
 import styles from './all-pages.module.css';
 
 export const ResetPasswordPage = (): React.JSX.Element => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
