@@ -5,12 +5,6 @@ import { type IWSOrdersPayload, type TWSOrder, WebsocketStatus } from '@utils/ty
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-export type TFeedMessage = {
-  orders: unknown[];
-  total: number;
-  totalToday: number;
-};
-
 type FeedState = {
   status: WebsocketStatus;
   connectionError: string | null;
@@ -75,6 +69,8 @@ export const feedSlice = createSlice({
       });
   },
 });
+
+export default feedSlice;
 
 export const { wsConnecting, wsOpen, wsClose, wsError, wsMessage, setCurrentOrder } =
   feedSlice.actions;

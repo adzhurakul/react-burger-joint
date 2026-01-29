@@ -37,5 +37,5 @@
   "include": ["src"],
   "exclude": ["cypress"],
   "references": [{ "path": "./tsconfig.node.json" }],
-  "types": ["@testing-library/jest-dom"]
+  "types": ["jest", "@testing-library/jest-dom", "node"]
 }

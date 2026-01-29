@@ -14,7 +14,7 @@ import {
   wsConnect,
   wsDisconnect,
 } from './feed-slice.ts';
-import ingredientsSlice from './ingredients-slice.ts';
+import ingredientsSlice, { ingredientsReducer } from './ingredients-slice.ts';
 
 import type { TWsInternalActions, TWsExternalActions } from './feed-slice.ts';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
@@ -33,7 +33,7 @@ const feedMiddleware = socketMiddleware({
 
 const rootReducer = combineReducers({
   [feedSlice.reducerPath]: feedSlice.reducer,
-  [ingredientsSlice.reducerPath]: ingredientsSlice.reducer,
+  [ingredientsSlice.reducerPath]: ingredientsReducer,
   [authSlice.reducerPath]: authSlice.reducer,
 });
 
