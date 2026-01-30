@@ -7,7 +7,7 @@ import feedSlice, {
   wsError,
   wsMessage,
   setCurrentOrder,
-} from './feed-slice';
+} from '../src/services/feed-slice';
 
 const orderMock = {
   _id: '1',

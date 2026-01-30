@@ -45,6 +45,7 @@ const BurgerIngredientCart = ({
       ref={refCallback}
       className={`${styles.cart_item} ${isDragging ? styles.dragging : ''}`}
       onClick={handleClick}
+      data-cy={`dragableIngredients-${ingredient._id}`}
     >
       <img className={styles.cart_image} src={ingredient.image} alt={ingredient.name} />
 

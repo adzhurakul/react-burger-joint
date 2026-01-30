@@ -3,7 +3,7 @@ import ingredientsSlice, {
   removeIngredientFromConstructor,
   setCurrentIngredient,
   reorderConstructorIngredients,
-} from './ingredients-slice';
+} from '../src/services/ingredients-slice';
 
 import type { TIngredient } from '@utils/types';
 
