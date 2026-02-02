@@ -34,16 +34,7 @@ jest.mock('@services/api', () => ({
 
 describe('feed reducer (sync only)', () => {
   it('returns initial state', () => {
-    expect(feedSlice.reducer(undefined, { type: 'UNKNOWN' })).toEqual({
-      status: WebsocketStatus.OFFLINE,
-      connectionError: null,
-      orders: [],
-      currentOrder: null,
-      total: 0,
-      totalToday: 0,
-      loading: false,
-      error: null,
-    });
+    expect(feedSlice.reducer(undefined, { type: 'UNKNOWN' })).toEqual(feedSlice.getInitialState());
   });
 
   it('wsConnecting sets status to CONNECTING', () => {

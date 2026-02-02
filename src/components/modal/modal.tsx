@@ -42,10 +42,14 @@ export const Modal = ({ children, header, onClose }: ModalProps): React.JSX.Elem
         {header !== null ? (
           <div className={styles.modal_header}>
             <h2 className="text text_type_main-large">{header}</h2>
-            <CloseIcon onClick={onClose} type="primary" data-cy="modalCloseIcon" />
+            <div data-cy="modalCloseIcon" onClick={onClose}>
+              <CloseIcon type="primary" />
+            </div>
           </div>
         ) : (
-          <CloseIcon onClick={onClose} type="primary" data-cy="modalCloseIcon" />
+          <div data-cy="modalCloseIcon" onClick={onClose}>
+            <CloseIcon type="primary" />
+          </div>
         )}
         <div className="modal-content">{children}</div>
       </div>

@@ -52,14 +52,7 @@ jest.mock('@services/api', () => ({
 
 describe('ingredients reducer (sync only)', () => {
   it('returns initial state', () => {
-    expect(ingredientsSlice.reducer(undefined, { type: 'UNKNOWN' })).toEqual({
-      allIngredients: [],
-      constructorIngredients: [],
-      currentIngredient: null,
-      createdOrder: null,
-      loading: false,
-      error: null,
-    });
+    expect(ingredientsSlice.reducer(undefined, { type: 'UNKNOWN' })).toEqual(ingredientsSlice.getInitialState());
   });
 
   it('addIngredientToConstructor adds ingredient with uniqueId', () => {

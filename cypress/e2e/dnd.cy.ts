@@ -1,7 +1,7 @@
 describe('template spec', () => {
-  before(() => {
+  beforeEach(() => {
     cy.viewport(1920, 1024);
-    cy.visit('http://localhost:3001/');
+    cy.visit('/');
   });
 
   it('should drag & drop', () => {
