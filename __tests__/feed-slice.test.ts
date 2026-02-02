@@ -33,8 +33,10 @@ jest.mock('@services/api', () => ({
 }));
 
 describe('feed reducer (sync only)', () => {
+  let initialSliceState = feedSlice.getInitialState();
+
   it('returns initial state', () => {
-    expect(feedSlice.reducer(undefined, { type: 'UNKNOWN' })).toEqual(feedSlice.getInitialState());
+    expect(feedSlice.reducer(undefined, { type: 'UNKNOWN' })).toEqual(initialSliceState);
   });
 
   it('wsConnecting sets status to CONNECTING', () => {
@@ -72,5 +74,46 @@ describe('feed reducer (sync only)', () => {
   it('setCurrentOrder sets currentOrder', () => {
     const state = feedSlice.reducer(undefined, setCurrentOrder(orderMock));
     expect(state.currentOrder).toEqual(orderMock);
+  });
+
+  it('fetchOrder.pending sets loading true and clears error', () => {
+    const state = feedSlice.reducer(undefined, {
+      type: 'fetchOrderPending',
+    });
+
+    expect(state.loading).toBe(true);
+    expect(state.error).toBeNull();
+  });
+
+  it('fetchOrder.fulfilled sets currentOrder and loading false', () => {
+    const state = feedSlice.reducer(
+      {
+        ...initialSliceState,
+        loading: true,
+      },
+      {
+        type: 'fetchOrderFulfilled',
+        payload: orderMock,
+      }
+    );
+
+    expect(state.loading).toBe(false);
+    expect(state.currentOrder).toEqual(orderMock);
+  });
+
+  it('fetchOrder.rejected sets error from payload and loading false', () => {
+    const state = feedSlice.reducer(
+      {
+        ...initialSliceState,
+        loading: true,
+      },
+      {
+        type: 'fetchOrderRejected',
+        payload: 'Ошибка загрузки',
+      }
+    );
+
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe('Ошибка загрузки');
   });
 });

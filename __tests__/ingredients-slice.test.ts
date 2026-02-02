@@ -99,3 +99,81 @@ describe('ingredients reducer (sync only)', () => {
     expect(state.constructorIngredients[1].type).toBe('sauce');
   });
 });
+
+describe('ingredients reducer (extraReducers)', () => {
+  const initialState = ingredientsSlice.getInitialState();
+
+  const createdOrderMock = {
+    id: 1,
+    ingredients: [bun, sauce],
+  };
+
+  it('fetchIngredients.pending sets loading true and clears error', () => {
+    const state = ingredientsSlice.reducer(initialState, {
+      type: 'fetchIngredientsPending',
+    });
+    expect(state.loading).toBe(true);
+    expect(state.error).toBeNull();
+  });
+
+  it('fetchIngredients.fulfilled sets allIngredients and loading false', () => {
+    const state = ingredientsSlice.reducer(initialState, {
+      type: 'fetchIngredientsFulfilled',
+      payload: [bun, sauce],
+    });
+    expect(state.loading).toBe(false);
+    expect(state.allIngredients).toEqual([bun, sauce]);
+  });
+
+  it('fetchIngredients.rejected sets error and loading false', () => {
+    const state = ingredientsSlice.reducer(initialState, {
+      type: 'fetchIngredientsRejected',
+      payload: 'Ошибка загрузки',
+    });
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe('Ошибка загрузки');
+  });
+
+  it('fetchIngredients.rejected sets default error if payload undefined', () => {
+    const state = ingredientsSlice.reducer(initialState, {
+      type: 'fetchIngredientsRejected',
+    });
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe('Неизвестная ошибка');
+  });
+
+  it('createOrder.pending sets loading true and clears error', () => {
+    const state = ingredientsSlice.reducer(initialState, {
+      type: 'createOrderPending',
+    });
+    expect(state.loading).toBe(true);
+    expect(state.error).toBeNull();
+  });
+
+  it('createOrder.fulfilled sets createdOrder and loading false', () => {
+    const state = ingredientsSlice.reducer(initialState, {
+      type: 'createOrderFulfilled',
+      payload: createdOrderMock,
+    });
+    expect(state.loading).toBe(false);
+    expect(state.createdOrder).toEqual(createdOrderMock);
+  });
+
+  it('createOrder.rejected sets error and loading false', () => {
+    const state = ingredientsSlice.reducer(initialState, {
+      type: 'createOrderRejected',
+      payload: 'Ошибка создания заказа',
+    });
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe('Ошибка создания заказа');
+  });
+
+  it('createOrder.rejected sets default error if payload undefined', () => {
+    const state = ingredientsSlice.reducer(initialState, {
+      type: 'createOrderRejected',
+    });
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe('Неизвестная ошибка');
+  });
+});
+
