@@ -36,3 +36,5 @@
 		'@utils': path.resolve(__dirname, './src/utils'),
 	},
 ```
+
+https://react-burger349.students.nomorepartiessbs.ru

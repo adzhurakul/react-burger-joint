@@ -87,6 +87,7 @@ export const BurgerConstructor = ({
         ref={(node) => {
           dropRef(node);
         }}
+        data-cy="burgerConstructorContainer"
       >
         {bun && bunElement('top', bun, '(верх)')}
 
